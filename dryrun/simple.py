@@ -2,11 +2,17 @@
 #            dazano [at] gmail [dot] com
 #
 
+from . import get_mode
+
 class simple:
     def __init__(self, function):
         self.function = function
 
     def __call__(self, *args, **kwargs):
+        # if dry run is disabled exec the original function
+        if get_mode() is False:
+            return self.function(*args, **kwargs)
+
         func_args = []
         if args:
             func_args.extend([str(arg) for arg in args])
