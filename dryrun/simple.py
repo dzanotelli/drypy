@@ -7,7 +7,7 @@ class simple:
         self.function = function
 
     def __call__(self, *args, **kwargs):
-        func_args = list()
+        func_args = []
         if args:
             func_args.extend([str(arg) for arg in args])
         if kwargs:
@@ -19,22 +19,4 @@ class simple:
                          args=", ".join(func_args))
 
         print(msg) # FIXME replace with logger
-
-
-
-def test():
-    def func(a, b):
-        print(a + b)
-
-    print('normal run:')
-    func(1, 2)
-
-    @simple
-    def func2(a, b):
-        print(a + b)
-
-    print ('dry run')
-    func2(1, 2)
-
-if __name__ == "__main__":
-    test()
+        return None

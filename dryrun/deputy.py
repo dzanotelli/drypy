@@ -16,22 +16,3 @@ class sheriff(simple):
     def deputy(self, dep):
         self.deputy_function = dep
         return dep
-
-def test():
-    @sheriff
-    def func(a, b):
-        print(a + b)
-
-    @sheriff
-    def func2(a):
-        print(a)
-
-    @func2.deputy
-    def func2dryrun(a):
-        print("dryrun: got arg {}".format(a))
-
-    func(1, 2)
-    func2('antani')
-
-if __name__ == "__main__":
-    test()
