@@ -2,7 +2,11 @@
 #            dazano [at] gmail [dot] com
 #
 
+import logging
 from . import get_mode
+
+logger = logging.getLogger(__name__)
+
 
 class simple:
     def __init__(self, function):
@@ -24,5 +28,5 @@ class simple:
         msg = msg.format(func=self.function.__name__,
                          args=", ".join(func_args))
 
-        print(msg) # FIXME replace with logger
+        logger.info(msg)
         return None

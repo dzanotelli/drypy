@@ -5,7 +5,6 @@
 from . import get_mode
 from .simple import simple
 
-
 class sheriff(simple):
     def __init__(self, func):
         self.function = func

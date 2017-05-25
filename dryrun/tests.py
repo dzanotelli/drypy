@@ -4,10 +4,14 @@
 #
 
 import unittest
-
+import logging
 from . import set_mode
 from .simple import simple
 from .deputy import sheriff
+
+# disable messages
+logger = logging.getLogger(__name__)
+logger.propagate = False
 
 @simple
 def a_function():
@@ -19,12 +23,13 @@ def another_function(one, two, three=None):
 
 @another_function.deputy
 def dryrun_another_function(one, two, three=None):
-    print("Custom dryrun substitute for 'another_function")
+    logger.info("Custom dryrun substitute for 'another_function'")
     return 321
 
 @sheriff
 def a_sheriff_which_fallbacks_to_simple(one):
     return True
+
 
 class TestSimpleDecorator(unittest.TestCase):
 
