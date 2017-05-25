@@ -8,7 +8,7 @@ from codecs import open
 from os import path
 from pip.req import parse_requirements
 from pip.download import PipSession
-from dryrun import get_version
+from drypy import get_version
 
 here = path.abspath(path.dirname(__file__))
 
