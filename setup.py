@@ -28,7 +28,7 @@ required.extend([entry for entry in required_all if entry not in required_dev])
 
 
 setup(
-    name="Python Dryrun",
+    name="drypy",
     version=get_version(),
     description="Python utilities to perform dryrun.",
     long_description=long_description,

@@ -1,18 +1,24 @@
 # Semplifing the pip/wheel package building ...
 #
 # PROJECT_NAME must have underscore in the place of spaces
-PROJECT_NAME="Python_Dryrun"
+PROJECT_NAME=drypy
 
-.PHONY: echo_msg build clean create_pkg
+.PHONY: msg_src msg_whl src whl clean
 
-rebuild: echo_msg clean build
-
-echo_msg:
+msg_whl:
 	@echo "=== " $(PROJECT_NAME) " ==="
-	@echo "Building the pip/wheel package ..."
+	@echo "Building the binary wheel package ..."
 	@echo ""
 
-build:
+msg_src:
+	@echo "=== " $(PROJECT_NAME) " ==="
+	@echo "Building the source tarball package ..."
+	@echo ""
+
+src: msg_src
+	python setup.py sdist
+
+whl: msg_whl
 	python setup.py bdist_wheel
 
 clean:
