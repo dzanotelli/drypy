@@ -24,7 +24,7 @@ class simple:
             func_args.extend(["{k}={v}".format(k=k, v=v)
                               for k, v in kwargs.items()])
 
-        msg = "[DRY-RUN] call to '{func}({args})'"
+        msg = "[DRYRUN] call to '{func}({args})'"
         msg = msg.format(func=self.function.__name__,
                          args=", ".join(func_args))
 
