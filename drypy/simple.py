@@ -3,7 +3,7 @@
 #
 
 import logging
-from . import get_mode
+from . import get_status
 
 logger = logging.getLogger(__name__)
 
@@ -14,7 +14,7 @@ class simple:
 
     def __call__(self, *args, **kwargs):
         # if dry run is disabled exec the original function
-        if get_mode() is False:
+        if get_status() is False:
             return self.function(*args, **kwargs)
 
         func_args = []
