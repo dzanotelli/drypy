@@ -9,8 +9,15 @@ logger = logging.getLogger(__name__)
 
 
 class sham:
-    def __init__(self, function):
-        self.function = function
+    """
+    *decorator*: instead of executing the original function
+    make drypy to log the call:
+
+        >>> foo(bar, baz=42)
+        [DRYRUN] call to 'foo(bar, baz=42)'
+    """
+    def __init__(self, func):
+        self.function = func
 
     def __call__(self, *args, **kwargs):
         # if dry run is disabled exec the original function

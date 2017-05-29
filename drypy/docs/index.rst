@@ -3,7 +3,7 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to drypy's documentation!
+drypy's docs
 =================================
 
 .. toctree::
@@ -11,10 +11,15 @@ Welcome to drypy's documentation!
    :caption: Contents:
 
 
+   intro
+   tutorial
+   api
 
-Indices and tables
-==================
+..
+  Indices and tables
+  ==================
 
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+..
+  * :ref:`genindex`
+  * :ref:`modindex`
+  * :ref:`search`

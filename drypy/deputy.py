@@ -6,6 +6,10 @@ from . import get_status
 from .sham import sham
 
 class sheriff(sham):
+    """
+    *decorator*: instead of executing the original function
+    make drypy to execute the *sheriff.deputy* function.
+    """
     def __init__(self, func):
         self.function = func
         self.deputy_function = None
@@ -21,7 +25,10 @@ class sheriff(sham):
         else:
             return self.deputy_function(*args, **kwargs)
 
-    def deputy(self, dep):
+    def deputy(self, func):
+        """
+        Mark the *sheriff* substitute.
+        """
         # FIXME: check dep, must be a callable
-        self.deputy_function = dep
-        return dep
+        self.deputy_function = func
+        return func
