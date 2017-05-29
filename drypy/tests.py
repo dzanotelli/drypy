@@ -6,19 +6,19 @@
 import unittest
 import logging
 import drypy
-from .simple import simple
+from .witness import witness
 from .deputy import sheriff
 
 # disable messages
 logger = logging.getLogger(__name__)
 logger.propagate = False
 
-@simple
+@witness
 def a_function():
     return True
 
 @sheriff
-def a_sheriff_which_fallbacks_to_simple(one):
+def a_sheriff_which_fallbacks_to_witness(one):
     return True
 
 @sheriff
@@ -58,9 +58,9 @@ class TestModeSwitcher(unittest.TestCase):
         self.assertEqual(drypy.get_status(), False)
 
 
-class TestSimpleDecorator(unittest.TestCase):
+class TestWitnessDecorator(unittest.TestCase):
     """
-    Test the 'simple' decorator
+    Test the 'witness' decorator
     """
     def test_a_function_dryrun_off(self):
         drypy.set_dryrun(False)
@@ -75,13 +75,13 @@ class TestSheriffDeputyDecorator(unittest.TestCase):
     """
     Test the sheriff+deputy decorator.
     """
-    def test_sheriff_fallback_simple_dryrun_off(self):
+    def test_sheriff_fallback_witness_dryrun_off(self):
         drypy.set_dryrun(False)
-        self.assertEqual(a_sheriff_which_fallbacks_to_simple(42), True)
+        self.assertEqual(a_sheriff_which_fallbacks_to_witness(42), True)
 
-    def test_sheriff_fallback_simple_dryrun_on(self):
+    def test_sheriff_fallback_witness_dryrun_on(self):
         drypy.set_dryrun(True)
-        self.assertEqual(a_sheriff_which_fallbacks_to_simple(42), None)
+        self.assertEqual(a_sheriff_which_fallbacks_to_witness(42), None)
 
     def test_another_function_dryrun_off(self):
         drypy.set_dryrun(False)

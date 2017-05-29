@@ -8,7 +8,7 @@ from . import get_status
 logger = logging.getLogger(__name__)
 
 
-class simple:
+class witness:
     def __init__(self, function):
         self.function = function
 
