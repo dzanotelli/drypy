@@ -6,19 +6,19 @@
 import unittest
 import logging
 import drypy
-from .witness import witness
+from .sham import sham
 from .deputy import sheriff
 
 # disable messages
 logger = logging.getLogger(__name__)
 logger.propagate = False
 
-@witness
+@sham
 def a_function():
     return True
 
 @sheriff
-def a_sheriff_which_fallbacks_to_witness(one):
+def a_sheriff_which_fallbacks_to_sham(one):
     return True
 
 @sheriff
@@ -58,9 +58,9 @@ class TestModeSwitcher(unittest.TestCase):
         self.assertEqual(drypy.get_status(), False)
 
 
-class TestWitnessDecorator(unittest.TestCase):
+class TestShamDecorator(unittest.TestCase):
     """
-    Test the 'witness' decorator
+    Test the 'sham' decorator
     """
     def test_a_function_dryrun_off(self):
         drypy.set_dryrun(False)
@@ -75,13 +75,13 @@ class TestSheriffDeputyDecorator(unittest.TestCase):
     """
     Test the sheriff+deputy decorator.
     """
-    def test_sheriff_fallback_witness_dryrun_off(self):
+    def test_sheriff_fallback_sham_dryrun_off(self):
         drypy.set_dryrun(False)
-        self.assertEqual(a_sheriff_which_fallbacks_to_witness(42), True)
+        self.assertEqual(a_sheriff_which_fallbacks_to_sham(42), True)
 
-    def test_sheriff_fallback_witness_dryrun_on(self):
+    def test_sheriff_fallback_sham_dryrun_on(self):
         drypy.set_dryrun(True)
-        self.assertEqual(a_sheriff_which_fallbacks_to_witness(42), None)
+        self.assertEqual(a_sheriff_which_fallbacks_to_sham(42), None)
 
     def test_another_function_dryrun_off(self):
         drypy.set_dryrun(False)

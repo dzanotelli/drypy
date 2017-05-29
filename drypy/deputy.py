@@ -3,9 +3,9 @@
 #
 
 from . import get_status
-from .witness import witness
+from .sham import sham
 
-class sheriff(witness):
+class sheriff(sham):
     def __init__(self, func):
         self.function = func
         self.deputy_function = None
