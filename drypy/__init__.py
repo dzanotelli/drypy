@@ -1,11 +1,18 @@
+"""drypy - dryrun for python
+
+.. moduleauthor:: Daniele Zanotelli <dazano@gmail.com>
+"""
+
 import logging
 from . import version
 
 logger = logging.getLogger(__name__)
 
 def get_version():
-    """
-    Return the current drypy version.
+    """Returns the current drypy version.
+
+    Returns:
+        A string with the current drypy version.
     """
     return version._version
 
@@ -13,8 +20,10 @@ def get_version():
 _dryrun = False
 
 def get_status():
-    """
-    Return True if the dryrun system is active.
+    """Returns True if the dryrun system is active.
+
+    Returns:
+        True or False
     """
     if _dryrun not in (True, False):
         msg = "Don't manually change the _dryrun flag! Use 'set_dryrun' "
@@ -24,8 +33,10 @@ def get_status():
     return _dryrun
 
 def set_dryrun(value):
-    """
-    Set the dryrun on or off.
+    """Set the dryrun mode on or off.
+
+    Args:
+        value (bool): Mode to be in.
     """
     global _dryrun
     if type(value) is not bool:
@@ -33,8 +44,7 @@ def set_dryrun(value):
     _dryrun = value
 
 def toggle_dryrun():
-    """
-    Toggle current dryrun status.
+    """Toggle the current dryrun mode.
     """
     if get_status() is True:
         set_dryrun(False)
