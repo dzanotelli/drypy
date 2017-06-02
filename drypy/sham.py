@@ -1,6 +1,10 @@
-# (C) 2017 - Daniele Zanotelli
-#            dazano [at] gmail [dot] com
-#
+"""
+.. module:: sham
+   :platform: Unix
+   :synopsis: Basic decorator to implement dryrun
+
+.. moduleauthor:: Daniele Zanotelli <dazano@gmail.com>
+"""
 
 import logging
 from . import get_status
@@ -9,10 +13,14 @@ logger = logging.getLogger(__name__)
 
 
 class sham:
-    """
-    *decorator*: instead of executing the original function
-    make drypy to log the call:
+    """Decorator which makes drypy to log the call to the target
+    function without executing it.
 
+    Example:
+        >>> @sham
+        ... def foo(bar, baz=None):
+        ...     pass
+        ...
         >>> foo(bar, baz=42)
         [DRYRUN] call to 'foo(bar, baz=42)'
     """
