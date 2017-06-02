@@ -1,7 +1,10 @@
-# (C) 2017 - Daniele Zanotelli
-#
-# Unit Test
-#
+"""
+.. module:: tests
+   :platform: Unix
+   :synopsis: drypy unittest
+
+.. moduleauthor:: Daniele Zanotelli <dazano@gmail.com>
+"""
 
 import unittest
 import logging
@@ -32,8 +35,7 @@ def dryrun_another_function(one, two, three=None):
 
 
 class TestModeSwitcher(unittest.TestCase):
-    """
-    Test the drypy switcher to set mode (dryrun/not dryrun)
+    """Test the drypy switcher to set mode (dryrun/not dryrun)
     """
     def test_get_status(self):
         drypy._dryrun = 'pippo'
@@ -59,8 +61,7 @@ class TestModeSwitcher(unittest.TestCase):
 
 
 class TestShamDecorator(unittest.TestCase):
-    """
-    Test the 'sham' decorator
+    """Test the 'sham' decorator
     """
     def test_a_function_dryrun_off(self):
         drypy.set_dryrun(False)
@@ -72,8 +73,7 @@ class TestShamDecorator(unittest.TestCase):
 
 
 class TestSheriffDeputyDecorator(unittest.TestCase):
-    """
-    Test the sheriff+deputy decorator.
+    """Test the sheriff+deputy decorator.
     """
     def test_sheriff_fallback_sham_dryrun_off(self):
         drypy.set_dryrun(False)
