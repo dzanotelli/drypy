@@ -6,13 +6,24 @@
 .. edited by Daniele Zanotelli
    last update: 1496417315
 
+.. _github: https://github.com/dzanotelli/python-dryrun.git
+
+
 drypy's docs - ver |version|
 =================================
 
 *drypy* is a small library meant to help the developer to implement dryrun
 mode in a flexible turn on/off fashion.
 
-*last release:* |release|
+*licence:*
+  *drypy* is released under the MIT license and you can download the
+  source code on the github_
+*last release:*
+  |release|
+
+
+
+
 
 .. toctree::
    :maxdepth: 2
