@@ -32,6 +32,13 @@ of executing *foo*:
    >>> foo(42)
    [DRYRUN] call to 'foo(42)'
 
+.. note::
+   *drypy* uses the python standard :py:mod:`logging` library therefore you
+   will need to provide valid handlers to ``drypy.logger`` in order to get the
+   messages.
+
+.. note::
+   *drypy* logs messages with the ``logging.INFO`` level.
 
 Custom substitute
 -----------------
