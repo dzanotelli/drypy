@@ -39,7 +39,7 @@ class sheriff(sham):
         if get_status() is False:
             return self.function(*args, **kwargs)
 
-        # if deputy is defined use it, fallback to 'simple' otherwise
+        # if deputy is defined use it, fallback to 'sham' otherwise
         if not self.deputy_function:
             return super().__call__(*args, **kwargs)
         else:
