@@ -54,6 +54,10 @@ class sheriff(sham):
         Returns:
             *func* itself.
         """
-        # FIXME: check dep, must be a callable
+        # func must be a callable
+        if not getattr(func, '__call__', None):
+            msg = "{} object is not a callable".format(type(func).__name__)
+            raise TypeError(msg)
+
         self.deputy_function = func
         return func
