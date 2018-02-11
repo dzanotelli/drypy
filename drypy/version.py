@@ -6,4 +6,4 @@
 .. moduleauthor:: Daniele Zanotelli <dazano@gmail.com>
 """
 
-_version = "0.1.dev1518371760"
+_version = "0.2"
