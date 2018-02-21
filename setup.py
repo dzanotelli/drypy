@@ -43,6 +43,7 @@ setup(
     keywords="dryrun",
     packages=find_packages(exclude=["docs", "tests"]),
     install_requires=required,
+    python_requires='>=3',
 
     extras_require={
         'dev': [],
