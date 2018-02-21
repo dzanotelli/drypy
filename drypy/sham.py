@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 
 
 class sham:
-    """Decorator which makes drypy to log the call to the target
+    """Decorator which makes drypy to log the call of the target
     function without executing it.
 
     Example:
@@ -22,7 +22,7 @@ class sham:
         ...     pass
         ...
         >>> foo(bar, baz=42)
-        [DRYRUN] call to 'foo(bar, baz=42)'
+        INFO:drypy.sham:[DRYRUN] call to 'foo(bar, baz=42)'
     """
     def __init__(self, func):
         self.function = func
