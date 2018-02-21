@@ -13,48 +13,57 @@ from .sham import sham
 from .deputy import sheriff
 
 # disable messages
-logger = logging.getLogger(__name__)
-logger.propagate = False
+logging.disable(logging.CRITICAL)
 
 @sham
 def a_function():
+    """Just a function decorated by sham.
+    """
     return True
 
 @sheriff
 def a_sheriff_which_fallbacks_to_sham(one):
+    """Just a function decorated by sheriff with no deputy.
+    It will fall back to sham.
+    """
     return True
 
 @sheriff
 def another_function(one, two, three=None):
+    """A third function decorated by sheriff; deputy follows.
+    """
     return 123
 
 @another_function.deputy
 def dryrun_another_function(one, two, three=None):
-    logger.info("[DRYRUN] Custom dryrun substitute for 'another_function'")
+    """The deputy which will be run in place of another_function.
+    """
     return 321
 
 
 class TestModeSwitcher(unittest.TestCase):
-    """Test the drypy switcher to set mode (dryrun/not dryrun)
+    """Test the drypy switcher setting mode on/off
     """
+
     def test_get_status(self):
+        # bad manual assignment will make 'get_status' to reset to False
         drypy._dryrun = 'pippo'
         self.assertEqual(drypy.get_status(), False)
 
-    def test_set_dryrun(self):
+    def test_dryrun_set_on(self):
         drypy.set_dryrun(True)
         self.assertEqual(drypy.get_status(), True)
 
-    def test_set_not_dryrun(self):
+    def test_dryrun_set_off(self):
         drypy.set_dryrun(False)
         self.assertEqual(drypy.get_status(), False)
 
-    def test_toggle_to_dryrun(self):
+    def test_dryrun_toggle_from_off(self):
         drypy.set_dryrun(False)
         drypy.toggle_dryrun()
         self.assertEqual(drypy.get_status(), True)
 
-    def test_toggle_to_not_dryrun(self):
+    def test_dryrun_toggle_from_on(self):
         drypy.set_dryrun(True)
         drypy.toggle_dryrun()
         self.assertEqual(drypy.get_status(), False)
