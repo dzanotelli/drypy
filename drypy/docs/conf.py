@@ -53,7 +53,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'drypy'
-copyright = '2017, Daniele Zanotelli'
+copyright = '2017-2018, Daniele Zanotelli'
 author = 'Daniele Zanotelli'
 
 # The version info for the project you're documenting, acts as replacement for
@@ -61,7 +61,7 @@ author = 'Daniele Zanotelli'
 # built documents.
 #
 # The short X.Y version.
-version = '0.1'
+version = drypy.get_version(short=True)
 # The full version, including alpha/beta/rc tags.
 release = drypy.get_version()
 

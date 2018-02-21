@@ -8,13 +8,17 @@ from . import version
 
 logger = logging.getLogger(__name__)
 
-def get_version():
+def get_version(short=False):
     """Returns the current drypy version.
 
     Returns:
         A string with the current drypy version.
     """
-    return version._version
+    if short:
+        # extract the first two parts of version (eg '1.2' from '1.2.3')
+        return '.'.join(version._version.split('.')[:2])
+    else:
+        return version._version
 
 # dryrun switcher
 _dryrun = False
