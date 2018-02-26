@@ -25,8 +25,9 @@ class sham:
         INFO:drypy.sham:[DRYRUN] call to 'foo(bar, baz=42)'
 
     .. note::
-       If you are dealing with methods, set `method=True` in
+       If you are dealing with bound methods, set `method=True` in
        your sham call:
+
        >>> class MyClass:
        ...     @sham(method=True)
        ...     def my_method(self, arg):

@@ -25,14 +25,10 @@ class sheriff:
         >>> my_func()
         I'm the Deputy!
 
-
-    .. note::
-       Providing a deputy is optional: when not provided drypy
-       will automatically fallback on :class:`sham` behaviour.
-
     .. note::
        If you are dealing with methods, set `method=True` in
        your sheriff call:
+
        >>> class MyClass:
        ...     @sheriff(method=True)
        ...     def my_method(self, arg):

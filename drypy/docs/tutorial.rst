@@ -20,7 +20,7 @@ Dryrun mode is easily achievable using the *sham* decorator:
 
    from drypy.sham import sham
 
-   @sham
+   @sham()
    def foo(bar, baz=False):
        ...
 
@@ -37,8 +37,19 @@ of executing *foo*:
    will need to provide valid handlers to ``drypy.logger`` in order to get the
    messages.
 
-.. note::
    *drypy* logs messages with the ``logging.INFO`` level.
+
+While writing custom classes the operation of directly decorating methods will
+automatically affect all the future instances:
+
+.. code-block:: python
+
+           class MyClass:
+               @sham(method=True)
+               def my_method(self, arg, kw='antani'):
+                   pass
+
+
 
 Custom substitute
 -----------------
@@ -51,7 +62,7 @@ pattern comes here in help:
 
    from drypy.deputy import sheriff
 
-   @sheriff
+   @sheriff()
    def foo(bar):
        # do this and that
        pass
@@ -95,7 +106,7 @@ can wrap it with either *sham*
            # write it to file
            try:
                with open('file.txt', 'a') as f:
-                   f.write = sham(f.write)
+                   f.write = sham()(f.write)
                    f.write(result)
                ...
 
@@ -106,7 +117,14 @@ or *sheriff*, and provide a *deputy*:
            # write it to file
            try:
                with open('file.txt', 'a') as f:
-                   f.write = sheriff(f.write)
+                   f.write = sheriff()(f.write)
                    f.write.deputy(self._deputy_of_write)
                    f.write(result)
                ...
+
+.. note::
+
+   Dealing with *staticmethods* your decorators should be called with
+   `method=False` (it's actually the default thus there is no need to specify
+   it). That's why in the example above sham and deputy decorators are called
+   without the *method* argument.
