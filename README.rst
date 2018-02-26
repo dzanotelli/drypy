@@ -30,7 +30,7 @@ Apply the `sham` decorator to your function and set dryrun as on.
    import drypy
    from drypy.sham import sham
 
-   @sham
+   @sham(method=False)
    def foo(bar):
        ...
 
