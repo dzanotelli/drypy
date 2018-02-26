@@ -9,12 +9,12 @@
 from . import get_status
 from .sham import sham
 
-class sheriff(sham):
+class sheriff:
     """Decorator which makes drypy to run *func.deputy*
     instead of *func*.
 
     Example:
-        >>> @sheriff
+        >>> @sheriff()
         ... def my_func():
         ...    print("I'm the Sheriff!")
         ...
@@ -25,27 +25,69 @@ class sheriff(sham):
         >>> my_func()
         I'm the Deputy!
 
-
     .. note::
-       Providing a deputy is optional: when not provided drypy
-       will automatically fallback on :class:`sham` behaviour.
+       If you are dealing with methods, set `method=True` in
+       your sheriff call:
+
+       >>> class MyClass:
+       ...     @sheriff(method=True)
+       ...     def my_method(self, arg):
+       ...         pass
+
     """
-    def __init__(self, func):
-        self.function = func
-        self.deputy_function = None
 
-    def __call__(self, *args, **kwargs):
-        # if dryrun is disabled exec the original function
-        if get_status() is False:
-            return self.function(*args, **kwargs)
+    def __init__(self, method=False):
+        if type(method) is not bool:
+            raise TypeError("method is not bool")
 
-        # if deputy is defined use it, fallback to 'sham' otherwise
-        if not self.deputy_function:
-            return super().__call__(*args, **kwargs)
+        self._method = method
+        self._deputy = None
+
+    def __call__(self, func, *args, **kwargs):
+        """Return a decorator which will exec the original
+        function/method if dryrun is set to False or run
+        the deputy function/method otherwise. If deputy is
+        not set the decorator will fallback to sham behaviour.
+
+        """
+        # keep a sheriff ref
+        this = self
+
+        if self._method:
+            def decorator(self, *args, **kw):
+                # if dryrun is disabled exec the original method
+                if get_status() is False:
+                    return func(self, *args, **kw)
+
+                # dryrun on: exec deputy method
+                if this.deputy:
+                    return this.deputy(self, *args, **kw)
+
+                # no deputy: fallback on sham
+                sham_decorator = sham(method=True)(func)
+                return sham_decorator(self, *args, **kw)
         else:
-            return self.deputy_function(*args, **kwargs)
+            def decorator(*args, **kw):
+                # if dryrun is disabled exec the original function
+                if get_status() is False:
+                    return func(*args, **kw)
 
-    def deputy(self, func):
+                # dryrun on: exec deputy function
+                if this.deputy:
+                    return this.deputy(*args, **kw)
+
+                ## no deputy: fallback on sham
+                sham_decorator = sham(method=False)(func)
+                return sham_decorator(*args, **kw)
+
+        decorator.deputy = this._set_deputy
+        return decorator
+
+    @property
+    def deputy(self):
+        return self._deputy
+
+    def _set_deputy(self, func):
         """Mark the *sheriff* substitute.
 
         Args:
@@ -59,5 +101,4 @@ class sheriff(sham):
             msg = "{} object is not a callable".format(type(func).__name__)
             raise TypeError(msg)
 
-        self.deputy_function = func
-        return func
+        self._deputy = func

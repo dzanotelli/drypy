@@ -15,34 +15,61 @@ from .deputy import sheriff
 # disable messages
 logging.disable(logging.CRITICAL)
 
-@sham
+@sham()
 def a_function():
     """Just a function decorated by sham.
+
     """
     return True
 
-@sheriff
+@sheriff()
 def a_sheriff_which_fallbacks_to_sham(one):
     """Just a function decorated by sheriff with no deputy.
     It will fall back to sham.
-    """
-    return True
 
-@sheriff
+    """
+    return 'truth!' if one == 42 else False
+
+@sheriff()
 def another_function(one, two, three=None):
     """A third function decorated by sheriff; deputy follows.
+
     """
     return 123
 
 @another_function.deputy
 def dryrun_another_function(one, two, three=None):
     """The deputy which will be run in place of another_function.
+
     """
     return 321
 
 
+class AClass:
+    """A Class with some methods to be decorated.
+
+    """
+
+    @sham(method=True)
+    def a_method(self, i, n=1):
+        return i * n
+
+    @sheriff(method=True)
+    def a_sheriff_which_fallbacks_to_sham(self, one, two=3):
+        return one + two
+
+    @sheriff(method=True)
+    def a_sheriff(self, foo, bar='hello'):
+        return "{} {}".format(bar, foo)
+
+    @a_sheriff.deputy
+    def a_sheriff_deputy(self, foo, bar='hello'):
+        return "goodbye world .."
+
+
 class TestModeSwitcher(unittest.TestCase):
     """Test the drypy switcher setting mode on/off
+
     """
 
     def test_get_status(self):
@@ -71,7 +98,15 @@ class TestModeSwitcher(unittest.TestCase):
 
 class TestShamDecorator(unittest.TestCase):
     """Test the 'sham' decorator
+
     """
+
+    def test_bad_decorated_function(self):
+        with self.assertRaises(TypeError):
+            @sham(method='antani')
+            def bad_decorated_func():
+                pass
+
     def test_a_function_dryrun_off(self):
         drypy.set_dryrun(False)
         self.assertEqual(a_function(), True)
@@ -80,13 +115,25 @@ class TestShamDecorator(unittest.TestCase):
         drypy.set_dryrun(True)
         self.assertEqual(a_function(), None)
 
+    def test_a_method_dryrun_off(self):
+        drypy.set_dryrun(False)
+        an_instance = AClass()
+        self.assertEqual(an_instance.a_method(10, 2), 20)
+
+    def test_a_method_dryrun_on(self):
+        drypy.set_dryrun(True)
+        an_instance = AClass()
+        self.assertEqual(an_instance.a_method(10, 2), None)
+
 
 class TestSheriffDeputyDecorator(unittest.TestCase):
-    """Test the sheriff+deputy decorator.
+    """Test the sheriff-deputy pattern.
+
     """
+
     def test_sheriff_fallback_sham_dryrun_off(self):
         drypy.set_dryrun(False)
-        self.assertEqual(a_sheriff_which_fallbacks_to_sham(42), True)
+        self.assertEqual(a_sheriff_which_fallbacks_to_sham(42), 'truth!')
 
     def test_sheriff_fallback_sham_dryrun_on(self):
         drypy.set_dryrun(True)
@@ -99,6 +146,30 @@ class TestSheriffDeputyDecorator(unittest.TestCase):
     def test_another_function_dryrun_on(self):
         drypy.set_dryrun(True)
         self.assertEqual(another_function(1, 2), 321)
+
+    def test_a_sheriff_which_fallbacks_to_sham_dryrun_off(self):
+        drypy.set_dryrun(False)
+        an_instance = AClass()
+        result = an_instance.a_sheriff_which_fallbacks_to_sham(40, 2)
+        self.assertEqual(result, 42)
+
+    def test_a_sheriff_which_fallbacks_to_sham_dryrun_on(self):
+        drypy.set_dryrun(True)
+        an_instance = AClass()
+        result = an_instance.a_sheriff_which_fallbacks_to_sham(40, 2)
+        self.assertEqual(result, None)
+
+    def test_a_sheriff_deputy_dryrun_off(self):
+        drypy.set_dryrun(False)
+        an_instance = AClass()
+        result = an_instance.a_sheriff('world')
+        self.assertEqual(result, 'hello world')
+
+    def test_a_sheriff_deputy_dryrun_on(self):
+        drypy.set_dryrun(True)
+        an_instance = AClass()
+        result = an_instance.a_sheriff('world')
+        self.assertEqual(result, "goodbye world ..")
 
 
 if __name__ == "__main__":
