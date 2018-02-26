@@ -49,8 +49,6 @@ class sham:
                     this._log_args(func, *args, **kwargs)
                     return None
 
-                return self.funtion(*args, **kwargs)
-
         return decorator
 
     def _log_args(self, func, *args, **kw):
