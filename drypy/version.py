@@ -6,4 +6,4 @@
 .. moduleauthor:: Daniele Zanotelli <dazano@gmail.com>
 """
 
-_version = "0.3"
+_version = "0.3.from-skratch"
