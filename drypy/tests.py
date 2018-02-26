@@ -46,6 +46,10 @@ def dryrun_another_function(one, two, three=None):
 
 
 class AClass:
+    """A Class with some methods to be decorated.
+
+    """
+
     @sham(method=True)
     def a_method(self, i, n=1):
         return i * n
@@ -65,6 +69,7 @@ class AClass:
 
 class TestModeSwitcher(unittest.TestCase):
     """Test the drypy switcher setting mode on/off
+
     """
 
     def test_get_status(self):
@@ -93,7 +98,15 @@ class TestModeSwitcher(unittest.TestCase):
 
 class TestShamDecorator(unittest.TestCase):
     """Test the 'sham' decorator
+
     """
+
+    def test_bad_decorated_function(self):
+        with self.assertRaises(TypeError):
+            @sham(method='antani')
+            def bad_decorated_func():
+                pass
+
     def test_a_function_dryrun_off(self):
         drypy.set_dryrun(False)
         self.assertEqual(a_function(), True)
@@ -114,8 +127,10 @@ class TestShamDecorator(unittest.TestCase):
 
 
 class TestSheriffDeputyDecorator(unittest.TestCase):
-    """Test the sheriff+deputy decorator.
+    """Test the sheriff-deputy pattern.
+
     """
+
     def test_sheriff_fallback_sham_dryrun_off(self):
         drypy.set_dryrun(False)
         self.assertEqual(a_sheriff_which_fallbacks_to_sham(42), 'truth!')

@@ -17,18 +17,35 @@ class sham:
     function without executing it.
 
     Example:
-        >>> @sham(method=False)
+        >>> @sham()
         ... def foo(bar, baz=None):
         ...     pass
         ...
         >>> foo(bar, baz=42)
         INFO:drypy.sham:[DRYRUN] call to 'foo(bar, baz=42)'
 
+    .. note::
+       If you are dealing with methods, set `method=True` in
+       your sham call:
+       >>> class MyClass:
+       ...     @sham(method=True)
+       ...     def my_method(self, arg):
+       ...         pass
+
     """
+
     def __init__(self, method=False):
+        if type(method) is not bool:
+            raise TypeError("method is not bool")
+
         self._method = method
 
     def __call__(self, func):
+        """Return a decorator which will exec the original
+        function/method if dryrun is set to False or log
+        the call otherwise.
+
+        """
         # keep a ref of sham instance
         this = self
 

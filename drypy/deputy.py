@@ -14,7 +14,7 @@ class sheriff:
     instead of *func*.
 
     Example:
-        >>> @sheriff
+        >>> @sheriff()
         ... def my_func():
         ...    print("I'm the Sheriff!")
         ...
@@ -30,12 +30,30 @@ class sheriff:
        Providing a deputy is optional: when not provided drypy
        will automatically fallback on :class:`sham` behaviour.
 
+    .. note::
+       If you are dealing with methods, set `method=True` in
+       your sheriff call:
+       >>> class MyClass:
+       ...     @sheriff(method=True)
+       ...     def my_method(self, arg):
+       ...         pass
+
     """
+
     def __init__(self, method=False):
+        if type(method) is not bool:
+            raise TypeError("method is not bool")
+
         self._method = method
         self._deputy = None
 
     def __call__(self, func, *args, **kwargs):
+        """Return a decorator which will exec the original
+        function/method if dryrun is set to False or run
+        the deputy function/method otherwise. If deputy is
+        not set the decorator will fallback to sham behaviour.
+
+        """
         # keep a sheriff ref
         this = self
 
