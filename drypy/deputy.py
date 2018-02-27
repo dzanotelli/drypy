@@ -102,3 +102,4 @@ class sheriff:
             raise TypeError(msg)
 
         self._deputy = func
+        return func
