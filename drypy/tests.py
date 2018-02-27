@@ -143,9 +143,17 @@ class TestSheriffDeputyDecorator(unittest.TestCase):
         drypy.set_dryrun(False)
         self.assertEqual(another_function(1, 2), 123)
 
+        # check that deputy function is still callable
+        self.assertEqual(dryrun_another_function(1, 2), 321)
+
     def test_another_function_dryrun_on(self):
         drypy.set_dryrun(True)
-        self.assertEqual(another_function(1, 2), 321)
+        result = another_function(1, 2)
+        self.assertEqual(result, 321)
+
+        # check that sheriff result is equal to deputy result
+        deputy_result = dryrun_another_function(1, 2)
+        self.assertEqual(result, deputy_result)
 
     def test_a_sheriff_which_fallbacks_to_sham_dryrun_off(self):
         drypy.set_dryrun(False)
@@ -165,11 +173,19 @@ class TestSheriffDeputyDecorator(unittest.TestCase):
         result = an_instance.a_sheriff('world')
         self.assertEqual(result, 'hello world')
 
+        # check also the deputy in order to verify it is still callable
+        deputy_result = an_instance.a_sheriff_deputy('zxc')
+        self.assertEqual(deputy_result, "goodbye world ..")
+
     def test_a_sheriff_deputy_dryrun_on(self):
         drypy.set_dryrun(True)
         an_instance = AClass()
         result = an_instance.a_sheriff('world')
         self.assertEqual(result, "goodbye world ..")
+
+        # deputy result must be the sheriff result
+        deputy_result = an_instance.a_sheriff_deputy('zxc')
+        self.assertEqual(deputy_result, result)
 
 
 if __name__ == "__main__":
