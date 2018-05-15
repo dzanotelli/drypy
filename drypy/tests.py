@@ -66,6 +66,14 @@ class AClass:
     def a_sheriff_deputy(self, foo, bar='hello'):
         return "goodbye world .."
 
+    @sheriff(method=True)
+    def do(self):
+        return 42
+
+    @do.deputy
+    def do(self):
+        return 24
+
 
 class TestModeSwitcher(unittest.TestCase):
     """Test the drypy switcher setting mode on/off
@@ -186,6 +194,15 @@ class TestSheriffDeputyDecorator(unittest.TestCase):
         # deputy result must be the sheriff result
         deputy_result = an_instance.a_sheriff_deputy('zxc')
         self.assertEqual(deputy_result, result)
+
+    def test_sheriff_deputy_same_name(self):
+        # introduced this test to fix bug 'issue-13': same name
+        # for the sheriff and deputy func make alw run the deputy
+        an_instance = AClass()
+        drypy.set_dryrun(True)
+        self.assertEqual(an_instance.do(), 24)
+        drypy.set_dryrun(False)
+        self.assertEqual(an_instance.do(), 42)
 
 
 if __name__ == "__main__":
