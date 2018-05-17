@@ -41,7 +41,7 @@ class sheriff:
             raise TypeError("method is not bool")
 
         self._method = method
-        self._deputy = None
+        self._deputy_func = None
 
     def __call__(self, func, *args, **kwargs):
         """Return a decorator which will exec the original
@@ -60,8 +60,8 @@ class sheriff:
                     return func(self, *args, **kw)
 
                 # dryrun on: exec deputy method
-                if this.deputy:
-                    return this.deputy(self, *args, **kw)
+                if this._deputy_func:
+                    return this._deputy_func(self, *args, **kw)
 
                 # no deputy: fallback on sham
                 sham_decorator = sham(method=True)(func)
@@ -73,8 +73,8 @@ class sheriff:
                     return func(*args, **kw)
 
                 # dryrun on: exec deputy function
-                if this.deputy:
-                    return this.deputy(*args, **kw)
+                if this._deputy_func:
+                    return this._deputy_func(*args, **kw)
 
                 ## no deputy: fallback on sham
                 sham_decorator = sham(method=False)(func)
@@ -83,23 +83,20 @@ class sheriff:
         decorator.deputy = this._set_deputy
         return decorator
 
-    @property
-    def deputy(self):
-        return self._deputy
-
-    def _set_deputy(self, func):
+    def _set_deputy(self, deputy_func):
         """Mark the *sheriff* substitute.
 
         Args:
-            func: The function drypy will run in place of *sheriff*.
+            deputy_func: The function drypy will run in place of *sheriff*.
 
         Returns:
-            *func* itself.
+            *deputy_func* itself.
         """
         # func must be a callable
-        if not getattr(func, '__call__', None):
-            msg = "{} object is not a callable".format(type(func).__name__)
+        if not getattr(deputy_func, '__call__', None):
+            msg = "{} object is not a callable"
+            msg = msg.format(type(deputy_func).__name__)
             raise TypeError(msg)
 
-        self._deputy = func
-        return func
+        self._deputy_func = deputy_func
+        return deputy_func
