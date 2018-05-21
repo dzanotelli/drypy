@@ -77,6 +77,34 @@ pattern comes here in help:
 When *drypy* dryrun mode is set to **True**, *foo_substitute* will be executed
 in place of *foo*.
 
+.. important::
+
+   While placing the custom substitute within the same namespace of the
+   original function, remember to define the deputy with a different name. Not
+   doing so, the deputy function will be always called in place of sheriff with
+   no reguard of the dryrun on/off status.
+
+Example:
+
+..   code-block:: python
+
+   class Pippo:
+        @sheriff(method=True)
+        def do(self):
+            # never called
+            print('foo')
+
+        @do.deputy
+        def do(self):
+            # always called
+            print('bar')
+
+   drypy.set_dryrun(False)
+
+This code block will always print `bar` even if dryrun is correctly set to
+`False` because the deputy function is overriding the sheriff.
+
+
 Advanced usage
 --------------
 
