@@ -7,12 +7,14 @@
 """
 
 import logging
+import functools
 from . import get_status
 
 logger = logging.getLogger(__name__)
 
 
 def sham(func):
+    @functools.wraps(func)
     def decorator(*args, **kw):
         # if dry run is disabled exec the original method
         if get_status() is False:

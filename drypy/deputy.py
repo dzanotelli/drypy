@@ -7,6 +7,7 @@
 """
 
 import logging
+import functools
 from . import get_status
 from .sham import log_args
 
@@ -14,6 +15,7 @@ logger = logging.getLogger(__name__)
 
 
 def sheriff(func):
+    @functools.wraps(func)
     def decorator(*args, **kw):
         # if dryrun is disabled exec the original method
         if get_status() is False:
