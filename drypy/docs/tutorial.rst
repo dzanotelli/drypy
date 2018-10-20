@@ -20,7 +20,7 @@ Dryrun mode is easily achievable using the *sham* decorator:
 
    from drypy.sham import sham
 
-   @sham()
+   @sham
    def foo(bar, baz=False):
        ...
 
@@ -39,17 +39,6 @@ of executing *foo*:
 
    *drypy* logs messages with the ``logging.INFO`` level.
 
-While writing custom classes the operation of directly decorating methods will
-automatically affect all the future instances:
-
-.. code-block:: python
-
-           class MyClass:
-               @sham(method=True)
-               def my_method(self, arg, kw='antani'):
-                   pass
-
-
 
 Custom substitute
 -----------------
@@ -62,47 +51,30 @@ pattern comes here in help:
 
    from drypy.deputy import sheriff
 
-   @sheriff()
+   @sheriff
    def foo(bar):
        # do this and that
        pass
 
    @foo.deputy
-   def foo_substitute(bar):
+   def foo(bar):
        # do this
        # DON'T do that
        # log a message
        pass
 
-When *drypy* dryrun mode is set to **True**, *foo_substitute* will be executed
-in place of *foo*.
+When *drypy* dryrun mode is set to **True**, the function marked by
+*foo.deputy* will be executed in place of the fisrt defined *foo*.
 
 .. important::
 
-   While placing the custom substitute within the same namespace of the
-   original function, remember to define the deputy with a different name. Not
-   doing so, the deputy function will be always called in place of sheriff with
-   no reguard of the dryrun on/off status.
+   Since the deputy function will receive the same args you use to pass to the
+   sheriff, it's advised that the two function signatures correspond.
+   Otherwise, if you think that the sheriff function signature may change in
+   the future, you can use the generic syntax `*args, **kw` for the deputy
+   args.
 
-Example:
 
-..   code-block:: python
-
-   class Pippo:
-        @sheriff(method=True)
-        def do(self):
-            # never called
-            print('foo')
-
-        @do.deputy
-        def do(self):
-            # always called
-            print('bar')
-
-   drypy.set_dryrun(False)
-
-This code block will always print `bar` even if dryrun is correctly set to
-`False` because the deputy function is overriding the sheriff.
 
 
 Advanced usage
@@ -134,7 +106,7 @@ can wrap it with either *sham*
            # write it to file
            try:
                with open('file.txt', 'a') as f:
-                   f.write = sham()(f.write)
+                   f.write = sham(f.write)
                    f.write(result)
                ...
 
@@ -145,7 +117,7 @@ or *sheriff*, and provide a *deputy*:
            # write it to file
            try:
                with open('file.txt', 'a') as f:
-                   f.write = sheriff()(f.write)
+                   f.write = sheriff(f.write)
                    f.write.deputy(self._deputy_of_write)
                    f.write(result)
                ...
