@@ -6,8 +6,12 @@
 .. moduleauthor:: Daniele Zanotelli <dazano@gmail.com>
 """
 
+import logging
 from . import get_status
 from .sham import log_args
+
+logger = logging.getLogger(__name__)
+
 
 def sheriff(func):
     def decorator(*args, **kw):
@@ -16,7 +20,7 @@ def sheriff(func):
             return func(*args, **kw)
 
         # dryrun on: exec deputy method
-        deputy_func = getattr(decorator, 'deputy_func', None)
+        deputy_func = getattr(decorator, 'deputy_callable', None)
         if callable(deputy_func):
             return deputy_func(*args, **kw)
 
@@ -24,10 +28,15 @@ def sheriff(func):
         return log_args(func, *args, **kw)
 
     def set_deputy(func):
-        setattr(decorator, 'deputy_func', func)
-        return func
+        setattr(decorator, 'deputy_callable', func)
+
+        if func.__name__ == getattr(decorator, 'sheriff_name', None):
+            return decorator
+        else:
+            return func
 
     setattr(decorator, 'deputy', set_deputy)
+    setattr(decorator, 'sheriff_name', func.__name__)
 
     return decorator
 

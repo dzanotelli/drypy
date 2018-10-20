@@ -42,6 +42,14 @@ def dryrun_another_function(one, two, three=None):
     """
     return 321
 
+@sheriff
+def a_last_func():
+    return True
+
+@a_last_func.deputy
+def a_last_func():
+    return False
+
 
 class AClass:
     """A Class with some methods to be decorated.
@@ -63,6 +71,14 @@ class AClass:
     @a_sheriff.deputy
     def a_sheriff_deputy(self, foo, bar='hello'):
         return "goodbye world .."
+
+    @sheriff
+    def a_last_method(self):
+        return "im the last sheriff"
+
+    @a_last_method.deputy
+    def a_last_method(self):
+        return "im the last deputy"
 
 
 class TestModeSwitcher(unittest.TestCase):
@@ -98,13 +114,6 @@ class TestShamDecorator(unittest.TestCase):
     """Test the 'sham' decorator
 
     """
-
-    # def test_bad_decorated_function(self):
-    #     with self.assertRaises(TypeError):
-    #         @sham(method='antani')
-    #         def bad_decorated_func():
-    #             pass
-
     def test_a_function_dryrun_off(self):
         drypy.set_dryrun(False)
         self.assertEqual(a_function(), True)
@@ -184,6 +193,22 @@ class TestSheriffDeputyDecorator(unittest.TestCase):
         # deputy result must be the sheriff result
         deputy_result = an_instance.a_sheriff_deputy('zxc')
         self.assertEqual(deputy_result, result)
+
+    def test_sheriff_deputy_func_with_same_name(self):
+        drypy.set_dryrun(False)
+        self.assertTrue(a_last_func())
+
+        drypy.set_dryrun(True)
+        self.assertFalse(a_last_func())
+
+    def test_sheriff_deputy_method_with_same_name(self):
+        instance = AClass()
+
+        drypy.set_dryrun(False)
+        self.assertEqual(instance.a_last_method(), "im the last sheriff")
+
+        drypy.set_dryrun(True)
+        self.assertEqual(instance.a_last_method(), "im the last deputy")
 
 
 if __name__ == "__main__":
