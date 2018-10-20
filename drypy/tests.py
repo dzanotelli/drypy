@@ -144,7 +144,7 @@ class TestSheriffDeputyDecorator(unittest.TestCase):
 
     def test_sheriff_without_deputy_dryrun_on(self):
         drypy.set_dryrun(True)
-        self.assertEqual(a_sheriff_without_deputy(42), None)
+        self.assertEqual(a_sheriff_without_deputy("some value"), None)
 
     def test_another_function_dryrun_off(self):
         drypy.set_dryrun(False)

@@ -14,85 +14,52 @@ logger = logging.getLogger(__name__)
 
 
 def sham(func):
+    """Decorator which makes drypy to log the call of the target
+    function without executing it.
+
+    Example:
+        >>> @sham
+        ... def foo(bar, baz=None):
+        ...     return 42
+        ...
+        >>> foo("sport", baz=False)
+        42
+        >>> foo("sport", baz=False)
+        INFO:drypy.sham:[DRYRUN] call to 'foo(sport, baz=False)'
+
+    """
     @functools.wraps(func)
     def decorator(*args, **kw):
         # if dry run is disabled exec the original method
         if get_status() is False:
             return func(*args, **kw)
         else:
-            log_args(func, *args, **kw)
+            log_call(func, *args, **kw)
             return None
     return decorator
 
-def log_args(func, *args, **kw):
+def log_call(func, *args, **kw):
+    # concatenate args and kw args transforming string values
+    # from 'value' to '"value"' for a pretty display
     func_args = []
 
     # concatenate positional args
+    args = list(args)
     if args:
+        for i, arg in enumerate(args):
+            if type(arg) is str:
+                args[i] = '"{}"'.format(arg)
         func_args.extend([str(arg) for arg in args])
 
     # concatenate non positional args
     if kw:
+        for key, value in kw.items():
+            if type(value) is str:
+                kw[key] = '"{}"'.format(value)
+
         func_args.extend(["{k}={v}".format(k=k, v=v) for k, v in kw.items()])
 
     # print the log message
     msg = "[DRYRUN] call to '{func}({args})'"
     msg = msg.format(func=func.__name__, args=", ".join(func_args))
     logger.info(msg)
-
-
-
-
-
-
-
-
-class sham2:
-    """Decorator which makes drypy to log the call of the target
-    function without executing it.
-
-    Example:
-        >>> @sham()
-        ... def foo(bar, baz=None):
-        ...     pass
-        ...
-        >>> foo(bar, baz=42)
-        INFO:drypy.sham:[DRYRUN] call to 'foo(bar, baz=42)'
-
-    .. note::
-       If you are dealing with bound methods, set `method=True` in
-       your sham call:
-
-       >>> class MyClass:
-       ...     @sham(method=True)
-       ...     def my_method(self, arg):
-       ...         pass
-
-    """
-    def __call__(self, func):
-        """Return a decorator which will exec the original
-        function/method if dryrun is set to False or log
-        the call otherwise.
-
-        """
-        def decorator(*args, **kwargs):
-            # if dry run is disabled exec the original method
-            if get_status() is False:
-                return func(*args, **kwargs)
-            else:
-                self._log_args(func, *args, **kwargs)
-                return None
-        return decorator
-
-    def _log_args(self, func, *args, **kw):
-        func_args = []
-        if args:
-            func_args.extend([str(arg) for arg in args])
-        if kw:
-            func_args.extend(["{k}={v}".format(k=k, v=v)
-                              for k, v in kw.items()])
-
-        msg = "[DRYRUN] call to '{func}({args})'"
-        msg = msg.format(func=func.__name__, args=", ".join(func_args))
-
-        logger.info(msg)
