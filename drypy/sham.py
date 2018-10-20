@@ -13,12 +13,12 @@ logger = logging.getLogger(__name__)
 
 
 def sham(func):
-    def decorator(*args, **kwargs):
+    def decorator(*args, **kw):
         # if dry run is disabled exec the original method
         if get_status() is False:
-            return func(*args, **kwargs)
+            return func(*args, **kw)
         else:
-            log_args(func, *args, **kwargs)
+            log_args(func, *args, **kw)
             return None
     return decorator
 

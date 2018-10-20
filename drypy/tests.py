@@ -20,27 +20,27 @@ def a_function():
     """
     return True
 
-# @sheriff()
-# def a_sheriff_which_fallbacks_to_sham(one):
-#     """Just a function decorated by sheriff with no deputy.
-#     It will fall back to sham.
+@sheriff
+def a_sheriff_without_deputy(one):
+    """Just a function decorated by sheriff with no deputy.
+    It will fall back to sham.
 
-#     """
-#     return 'truth!' if one == 42 else False
+    """
+    return 'truth!' if one == 42 else False
 
-# @sheriff()
-# def another_function(one, two, three=None):
-#     """A third function decorated by sheriff; deputy follows.
+@sheriff
+def another_function(one, two, three=None):
+    """A third function decorated by sheriff; deputy follows.
 
-#     """
-#     return 123
+    """
+    return 123
 
-# @another_function.deputy
-# def dryrun_another_function(one, two, three=None):
-#     """The deputy which will be run in place of another_function.
+@another_function.deputy
+def dryrun_another_function(one, two, three=None):
+    """The deputy which will be run in place of another_function.
 
-#     """
-#     return 321
+    """
+    return 321
 
 
 class AClass:
@@ -52,17 +52,17 @@ class AClass:
     def a_method(self, i, n=1):
         return i * n
 
-    # @sheriff(method=True)
-    # def a_sheriff_which_fallbacks_to_sham(self, one, two=3):
-    #     return one + two
+    @sheriff
+    def a_sheriff_without_deputy(self, one, two=3):
+        return one + two
 
-    # @sheriff(method=True)
-    # def a_sheriff(self, foo, bar='hello'):
-    #     return "{} {}".format(bar, foo)
+    @sheriff
+    def a_sheriff(self, foo, bar='hello'):
+        return "{} {}".format(bar, foo)
 
-    # @a_sheriff.deputy
-    # def a_sheriff_deputy(self, foo, bar='hello'):
-    #     return "goodbye world .."
+    @a_sheriff.deputy
+    def a_sheriff_deputy(self, foo, bar='hello'):
+        return "goodbye world .."
 
 
 class TestModeSwitcher(unittest.TestCase):
@@ -124,66 +124,66 @@ class TestShamDecorator(unittest.TestCase):
         self.assertEqual(an_instance.a_method(10, 2), None)
 
 
-# class TestSheriffDeputyDecorator(unittest.TestCase):
-#     """Test the sheriff-deputy pattern.
+class TestSheriffDeputyDecorator(unittest.TestCase):
+    """Test the sheriff-deputy pattern.
 
-#     """
+    """
 
-#     def test_sheriff_fallback_sham_dryrun_off(self):
-#         drypy.set_dryrun(False)
-#         self.assertEqual(a_sheriff_which_fallbacks_to_sham(42), 'truth!')
+    def test_sheriff_without_deputy_dryrun_off(self):
+        drypy.set_dryrun(False)
+        self.assertEqual(a_sheriff_without_deputy(42), 'truth!')
 
-#     def test_sheriff_fallback_sham_dryrun_on(self):
-#         drypy.set_dryrun(True)
-#         self.assertEqual(a_sheriff_which_fallbacks_to_sham(42), None)
+    def test_sheriff_without_deputy_dryrun_on(self):
+        drypy.set_dryrun(True)
+        self.assertEqual(a_sheriff_without_deputy(42), None)
 
-#     def test_another_function_dryrun_off(self):
-#         drypy.set_dryrun(False)
-#         self.assertEqual(another_function(1, 2), 123)
+    def test_another_function_dryrun_off(self):
+        drypy.set_dryrun(False)
+        self.assertEqual(another_function(1, 2), 123)
 
-#         # check that deputy function is still callable
-#         self.assertEqual(dryrun_another_function(1, 2), 321)
+        # check that deputy function is still callable
+        self.assertEqual(dryrun_another_function(1, 2), 321)
 
-#     def test_another_function_dryrun_on(self):
-#         drypy.set_dryrun(True)
-#         result = another_function(1, 2)
-#         self.assertEqual(result, 321)
+    def test_another_function_dryrun_on(self):
+        drypy.set_dryrun(True)
+        result = another_function(1, 2)
+        self.assertEqual(result, 321)
 
-#         # check that sheriff result is equal to deputy result
-#         deputy_result = dryrun_another_function(1, 2)
-#         self.assertEqual(result, deputy_result)
+        # check that sheriff result is equal to deputy result
+        deputy_result = dryrun_another_function(1, 2)
+        self.assertEqual(result, deputy_result)
 
-#     def test_a_sheriff_which_fallbacks_to_sham_dryrun_off(self):
-#         drypy.set_dryrun(False)
-#         an_instance = AClass()
-#         result = an_instance.a_sheriff_which_fallbacks_to_sham(40, 2)
-#         self.assertEqual(result, 42)
+    def test_a_sheriff_without_deputy_dryrun_off(self):
+        drypy.set_dryrun(False)
+        an_instance = AClass()
+        result = an_instance.a_sheriff_without_deputy(40, 2)
+        self.assertEqual(result, 42)
 
-#     def test_a_sheriff_which_fallbacks_to_sham_dryrun_on(self):
-#         drypy.set_dryrun(True)
-#         an_instance = AClass()
-#         result = an_instance.a_sheriff_which_fallbacks_to_sham(40, 2)
-#         self.assertEqual(result, None)
+    def test_a_sheriff_without_deputy_dryrun_on(self):
+        drypy.set_dryrun(True)
+        an_instance = AClass()
+        result = an_instance.a_sheriff_without_deputy(40, 2)
+        self.assertEqual(result, None)
 
-#     def test_a_sheriff_deputy_dryrun_off(self):
-#         drypy.set_dryrun(False)
-#         an_instance = AClass()
-#         result = an_instance.a_sheriff('world')
-#         self.assertEqual(result, 'hello world')
+    def test_a_sheriff_deputy_dryrun_off(self):
+        drypy.set_dryrun(False)
+        an_instance = AClass()
+        result = an_instance.a_sheriff('world')
+        self.assertEqual(result, 'hello world')
 
-#         # check also the deputy in order to verify it is still callable
-#         deputy_result = an_instance.a_sheriff_deputy('zxc')
-#         self.assertEqual(deputy_result, "goodbye world ..")
+        # check also the deputy in order to verify it is still callable
+        deputy_result = an_instance.a_sheriff_deputy('zxc')
+        self.assertEqual(deputy_result, "goodbye world ..")
 
-#     def test_a_sheriff_deputy_dryrun_on(self):
-#         drypy.set_dryrun(True)
-#         an_instance = AClass()
-#         result = an_instance.a_sheriff('world')
-#         self.assertEqual(result, "goodbye world ..")
+    def test_a_sheriff_deputy_dryrun_on(self):
+        drypy.set_dryrun(True)
+        an_instance = AClass()
+        result = an_instance.a_sheriff('world')
+        self.assertEqual(result, "goodbye world ..")
 
-#         # deputy result must be the sheriff result
-#         deputy_result = an_instance.a_sheriff_deputy('zxc')
-#         self.assertEqual(deputy_result, result)
+        # deputy result must be the sheriff result
+        deputy_result = an_instance.a_sheriff_deputy('zxc')
+        self.assertEqual(deputy_result, result)
 
 
 if __name__ == "__main__":
