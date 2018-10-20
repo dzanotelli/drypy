@@ -12,7 +12,39 @@ from . import get_status
 logger = logging.getLogger(__name__)
 
 
-class sham:
+def sham(func):
+    def decorator(*args, **kwargs):
+        # if dry run is disabled exec the original method
+        if get_status() is False:
+            return func(*args, **kwargs)
+        else:
+            log_args(func, *args, **kwargs)
+            return None
+    return decorator
+
+def log_args(func, *args, **kw):
+    func_args = []
+
+    # concatenate positional args
+    if args:
+        func_args.extend([str(arg) for arg in args])
+
+    # concatenate non positional args
+    if kw:
+        func_args.extend(["{k}={v}".format(k=k, v=v) for k, v in kw.items()])
+        msg = "[DRYRUN] call to '{func}({args})'"
+        msg = msg.format(func=func.__name__, args=", ".join(func_args))
+
+        logger.info(msg)
+
+
+
+
+
+
+
+
+class sham2:
     """Decorator which makes drypy to log the call of the target
     function without executing it.
 
@@ -34,39 +66,19 @@ class sham:
        ...         pass
 
     """
-
-    def __init__(self, method=False):
-        if type(method) is not bool:
-            raise TypeError("method is not bool")
-
-        self._method = method
-
     def __call__(self, func):
         """Return a decorator which will exec the original
         function/method if dryrun is set to False or log
         the call otherwise.
 
         """
-        # keep a ref of sham instance
-        this = self
-
-        if self._method:
-            def decorator(self, *args, **kwargs):
-                # if dry run is disabled exec the original method
-                if get_status() is False:
-                    return func(self, *args, **kwargs)
-                else:
-                    this._log_args(func, *args, **kwargs)
-                    return None
-        else:
-            def decorator(*args, **kwargs):
-                # if dry run is disabled exec the original function
-                if get_status() is False:
-                    return func(*args, **kwargs)
-                else:
-                    this._log_args(func, *args, **kwargs)
-                    return None
-
+        def decorator(*args, **kwargs):
+            # if dry run is disabled exec the original method
+            if get_status() is False:
+                return func(*args, **kwargs)
+            else:
+                self._log_args(func, *args, **kwargs)
+                return None
         return decorator
 
     def _log_args(self, func, *args, **kw):
