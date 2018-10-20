@@ -189,7 +189,7 @@ class TestShamDecorator(unittest.TestCase):
 if __name__ == "__main__":
     import io
     captured = io.StringIO()
-    logging.basicConfig(stream=captured)
+    logging.basicConfig(stream=captured, level=logging.INFO)
 
     try:
         unittest.main()

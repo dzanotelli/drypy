@@ -32,10 +32,11 @@ def log_args(func, *args, **kw):
     # concatenate non positional args
     if kw:
         func_args.extend(["{k}={v}".format(k=k, v=v) for k, v in kw.items()])
-        msg = "[DRYRUN] call to '{func}({args})'"
-        msg = msg.format(func=func.__name__, args=", ".join(func_args))
 
-        logger.info(msg)
+    # print the log message
+    msg = "[DRYRUN] call to '{func}({args})'"
+    msg = msg.format(func=func.__name__, args=", ".join(func_args))
+    logger.info(msg)
 
 
 
