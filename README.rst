@@ -4,10 +4,10 @@ drypy - easy dryrun mode for Python
 The module helps you to implement `dryrun` mode in your
 Python projects with an easy switch 'on/off' feature.
 
-Authors: Daniele Zanotelli (dazano@gmail.com)
-Copyright: 2017-2018
-License: MIT
-Python version: 3.x
+Authors: Daniele Zanotelli (dazano@gmail.com) \
+Copyright: 2017-2018 \
+License: MIT \
+Python version: 3.x \
 
 Documentation
 -------------
