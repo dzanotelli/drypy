@@ -5,8 +5,9 @@ The module helps you to implement `dryrun` mode in your
 Python projects with an easy switch 'on/off' feature.
 
 Authors: Daniele Zanotelli (dazano@gmail.com)
-
+Copyright: 2017-2018
 License: MIT
+Python version: 3.x
 
 Documentation
 -------------
@@ -18,7 +19,22 @@ under the docs directory.
 
 You can read the latest docs visiting the `project docs`_ online.
 
+Installation
+------------
 
+Via pip:
+
+::
+   $ pip install drypy
+
+or download the project from the github and compile the package
+
+::
+   $ git clone https://github.com/dzanotelli/drypy.git
+   $ cd drypy
+   $ make whl
+
+and you'll find your brand-new whl under the dist/ subdirectory.
 
 Basic usage
 -----------
@@ -27,16 +43,14 @@ Apply the `sham` decorator to your function and set dryrun as on.
 
 ::
 
-   import drypy
-   from drypy.sham import sham
+   from drypy import dryrun
+   from drypy.patterns import sham
 
-   @sham
-   def foo(bar):
-       ...
-
-   drypy.set_dryrun(True)
-
-   foo(42)
+   >>> @sham
+   >>> def foo(bar):
+           pass
+   >>> dryrun(True)
+   >>> foo(42)
 
 Will log the following output:
 
