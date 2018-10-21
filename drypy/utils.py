@@ -1,46 +1,22 @@
 """
-.. module:: sham
+.. module:: utils
    :platform: Unix
-   :synopsis: Basic decorator to implement dryrun
+   :synopsis: Miscellaneous utils
 
 .. moduleauthor:: Daniele Zanotelli <dazano@gmail.com>
 """
 
 import logging
-import functools
-from . import get_status
 
 logger = logging.getLogger(__name__)
 
 
-def sham(func):
-    """Decorator which makes drypy to log the call of the target
-    function without executing it.
-
-    Example:
-        >>> @sham
-        ... def foo(bar, baz=None):
-        ...     return 42
-        ...
-        >>> foo("sport", baz=False)
-        42
-        >>> foo("sport", baz=False)
-        INFO:drypy.sham:[DRYRUN] call to 'foo(sport, baz=False)'
+def log_call(func, *args, **kw):
+    """Produce a info message which logs the *func* call.
 
     """
-    @functools.wraps(func)
-    def decorator(*args, **kw):
-        # if dry run is disabled exec the original method
-        if get_status() is False:
-            return func(*args, **kw)
-        else:
-            log_call(func, *args, **kw)
-            return None
-    return decorator
-
-def log_call(func, *args, **kw):
     # concatenate args and kw args transforming string values
-    # from 'value' to '"value"' for a pretty display
+    # from 'value' to '"value"' in order to pretty display em
     func_args = []
 
     # concatenate positional args

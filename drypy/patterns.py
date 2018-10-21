@@ -1,18 +1,43 @@
 """
-.. module:: deputy
+.. module:: patterns
    :platform: Unix
-   :synopsis: Sheriff-Deputy pattern decorator
+   :synopsis: Decorators to implement dryrun
 
 .. moduleauthor:: Daniele Zanotelli <dazano@gmail.com>
 """
 
 import logging
 import functools
-from . import get_status
-from .sham import log_call
+from . import dryrun
+from .utils import log_call
 
 logger = logging.getLogger(__name__)
 
+
+def sham(func):
+    """Decorator which makes drypy to log the call of the target
+    function without executing it.
+
+    Example:
+        >>> @sham
+        ... def foo(bar, baz=None):
+        ...     return 42
+        ...
+        >>> foo("sport", baz=False)
+        42
+        >>> foo("sport", baz=False)
+        INFO:drypy.sham:[DRYRUN] call to 'foo(sport, baz=False)'
+
+    """
+    @functools.wraps(func)
+    def decorator(*args, **kw):
+        # if dry run is disabled exec the original method
+        if dryrun() is False:
+            return func(*args, **kw)
+        else:
+            log_call(func, *args, **kw)
+            return None
+    return decorator
 
 def sheriff(func):
     """Decorator which makes drypy to run *func.deputy*
@@ -38,7 +63,7 @@ def sheriff(func):
     @functools.wraps(func)
     def decorator(*args, **kw):
         # if dryrun is disabled exec the original method
-        if get_status() is False:
+        if dryrun() is False:
             return func(*args, **kw)
 
         # dryrun on: exec deputy method

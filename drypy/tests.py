@@ -9,8 +9,8 @@
 import unittest
 import logging
 import drypy
-from drypy.sham import sham
-from drypy.deputy import sheriff
+from drypy import dryrun, toggle_dryrun
+from drypy.patterns import sham, sheriff
 
 
 @sham
@@ -89,25 +89,25 @@ class TestModeSwitcher(unittest.TestCase):
     def test_get_status(self):
         # bad manual assignment will make 'get_status' to reset to False
         drypy._dryrun = 'pippo'
-        self.assertEqual(drypy.get_status(), False)
+        self.assertEqual(dryrun(), False)
 
     def test_dryrun_set_on(self):
-        drypy.set_dryrun(True)
-        self.assertEqual(drypy.get_status(), True)
+        dryrun(True)
+        self.assertEqual(dryrun(), True)
 
     def test_dryrun_set_off(self):
-        drypy.set_dryrun(False)
-        self.assertEqual(drypy.get_status(), False)
+        dryrun(False)
+        self.assertEqual(dryrun(), False)
 
     def test_dryrun_toggle_from_off(self):
-        drypy.set_dryrun(False)
-        drypy.toggle_dryrun()
-        self.assertEqual(drypy.get_status(), True)
+        dryrun(False)
+        toggle_dryrun()
+        self.assertEqual(dryrun(), True)
 
     def test_dryrun_toggle_from_on(self):
-        drypy.set_dryrun(True)
-        drypy.toggle_dryrun()
-        self.assertEqual(drypy.get_status(), False)
+        dryrun(True)
+        toggle_dryrun()
+        self.assertEqual(dryrun(), False)
 
 
 class TestShamDecorator(unittest.TestCase):
@@ -115,20 +115,20 @@ class TestShamDecorator(unittest.TestCase):
 
     """
     def test_a_function_dryrun_off(self):
-        drypy.set_dryrun(False)
+        dryrun(False)
         self.assertEqual(a_function(), True)
 
     def test_a_function_dryrun_on(self):
-        drypy.set_dryrun(True)
+        dryrun(True)
         self.assertEqual(a_function(), None)
 
     def test_a_method_dryrun_off(self):
-        drypy.set_dryrun(False)
+        dryrun(False)
         an_instance = AClass()
         self.assertEqual(an_instance.a_method(10, 2), 20)
 
     def test_a_method_dryrun_on(self):
-        drypy.set_dryrun(True)
+        dryrun(True)
         an_instance = AClass()
         self.assertEqual(an_instance.a_method(10, 2), None)
 
@@ -139,22 +139,22 @@ class TestSheriffDeputyDecorator(unittest.TestCase):
     """
 
     def test_sheriff_without_deputy_dryrun_off(self):
-        drypy.set_dryrun(False)
+        dryrun(False)
         self.assertEqual(a_sheriff_without_deputy(42), 'truth!')
 
     def test_sheriff_without_deputy_dryrun_on(self):
-        drypy.set_dryrun(True)
+        dryrun(True)
         self.assertEqual(a_sheriff_without_deputy("some value"), None)
 
     def test_another_function_dryrun_off(self):
-        drypy.set_dryrun(False)
+        dryrun(False)
         self.assertEqual(another_function(1, 2), 123)
 
         # check that deputy function is still callable
         self.assertEqual(dryrun_another_function(1, 2), 321)
 
     def test_another_function_dryrun_on(self):
-        drypy.set_dryrun(True)
+        dryrun(True)
         result = another_function(1, 2)
         self.assertEqual(result, 321)
 
@@ -163,19 +163,19 @@ class TestSheriffDeputyDecorator(unittest.TestCase):
         self.assertEqual(result, deputy_result)
 
     def test_a_sheriff_without_deputy_dryrun_off(self):
-        drypy.set_dryrun(False)
+        dryrun(False)
         an_instance = AClass()
         result = an_instance.a_sheriff_without_deputy(40, 2)
         self.assertEqual(result, 42)
 
     def test_a_sheriff_without_deputy_dryrun_on(self):
-        drypy.set_dryrun(True)
+        dryrun(True)
         an_instance = AClass()
         result = an_instance.a_sheriff_without_deputy(40, 2)
         self.assertEqual(result, None)
 
     def test_a_sheriff_deputy_dryrun_off(self):
-        drypy.set_dryrun(False)
+        dryrun(False)
         an_instance = AClass()
         result = an_instance.a_sheriff('world')
         self.assertEqual(result, 'hello world')
@@ -185,7 +185,7 @@ class TestSheriffDeputyDecorator(unittest.TestCase):
         self.assertEqual(deputy_result, "goodbye world ..")
 
     def test_a_sheriff_deputy_dryrun_on(self):
-        drypy.set_dryrun(True)
+        dryrun(True)
         an_instance = AClass()
         result = an_instance.a_sheriff('world')
         self.assertEqual(result, "goodbye world ..")
@@ -195,19 +195,19 @@ class TestSheriffDeputyDecorator(unittest.TestCase):
         self.assertEqual(deputy_result, result)
 
     def test_sheriff_deputy_func_with_same_name(self):
-        drypy.set_dryrun(False)
+        dryrun(False)
         self.assertTrue(a_last_func())
 
-        drypy.set_dryrun(True)
+        dryrun(True)
         self.assertFalse(a_last_func())
 
     def test_sheriff_deputy_method_with_same_name(self):
         instance = AClass()
 
-        drypy.set_dryrun(False)
+        dryrun(False)
         self.assertEqual(instance.a_last_method(), "im the last sheriff")
 
-        drypy.set_dryrun(True)
+        dryrun(True)
         self.assertEqual(instance.a_last_method(), "im the last deputy")
 
 
@@ -221,5 +221,4 @@ if __name__ == "__main__":
     finally:
         captured.seek(0)
         print("\n---- CAPTURED LOGS ----")
-        for line in captured.readlines():
-            print(line)
+        print(captured.read())
