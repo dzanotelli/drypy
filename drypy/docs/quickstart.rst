@@ -78,7 +78,7 @@ When *drypy* dryrun mode is set to **True**, the function marked by
 Advanced usage
 --------------
 
-Sometime you may need to activate just a particular standard call into your
+Sometime you may need to activate just a particular call into your
 function. Let's say we have something like:
 
 .. code-block:: python
@@ -119,3 +119,6 @@ or *sheriff*, and provide a *deputy*:
                    f.write.deputy(self._deputy_of_write)
                    f.write(result)
                ...
+
+where :code:`self._deputy_of_write` should be defined with the same args of
+:code:`f.write` or with :code:`*args, **kw`.
