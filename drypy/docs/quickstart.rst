@@ -1,5 +1,5 @@
-Tutorial
-========
+Quickstart
+==========
 
 Basic usage
 -----------
@@ -18,7 +18,7 @@ Dryrun mode is easily achievable using the *sham* decorator:
 
 .. code-block:: python
 
-   from drypy.sham import sham
+   from drypy.patterns import sham
 
    @sham
    def foo(bar, baz=False):
@@ -27,15 +27,15 @@ Dryrun mode is easily achievable using the *sham* decorator:
 Turning on *drypy* it's enough to make it log the following message instead
 of executing *foo*:
 
-   >>> import drypy
-   >>> drypy.set_dryrun(True)
+   >>> from drypy import dryrun
+   >>> dryrun(True)
    >>> foo(42)
    [DRYRUN] call to 'foo(42)'
 
 .. note::
+
    *drypy* uses the python standard :py:mod:`logging` library therefore you
-   will need to provide valid handlers to ``drypy.logger`` in order to get the
-   messages.
+   will need to setup valid handlers in order to get the messages.
 
    *drypy* logs messages with the ``logging.INFO`` level.
 
@@ -43,13 +43,13 @@ of executing *foo*:
 Custom substitute
 -----------------
 
-Sometimes we may have complex situations we want to manage in a custom way,
+Sometimes we may have complex situations we want to manage in a custom way
 providing a complete substitute to the original function. The *sheriff-deputy*
 pattern comes here in help:
 
 .. code-block:: python
 
-   from drypy.deputy import sheriff
+   from drypy.patterns import sheriff
 
    @sheriff
    def foo(bar):
@@ -68,13 +68,11 @@ When *drypy* dryrun mode is set to **True**, the function marked by
 
 .. important::
 
-   Since the deputy function will receive the same args you use to pass to the
+   Since the deputy function will receive the same args you are passing to the
    sheriff, it's advised that the two function signatures correspond.
    Otherwise, if you think that the sheriff function signature may change in
    the future, you can use the generic syntax `*args, **kw` for the deputy
    args.
-
-
 
 
 Advanced usage
@@ -121,10 +119,3 @@ or *sheriff*, and provide a *deputy*:
                    f.write.deputy(self._deputy_of_write)
                    f.write(result)
                ...
-
-.. note::
-
-   Dealing with *staticmethods* your decorators should be called with
-   `method=False` (it's actually the default thus there is no need to specify
-   it). That's why in the example above sham and deputy decorators are called
-   without the *method* argument.

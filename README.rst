@@ -16,7 +16,7 @@ Python projects with an easy switch 'on/off' feature.
 Documentation
 -------------
 .. _Sphinx: http://www.sphinx-doc.org/
-.. _`project docs`: http://drypy.m240.it/docs/
+.. _`project docs`: https://drypy.readthedocs.io/
 
 The package is supplied with Sphinx_ compilable documentation
 under the docs directory.

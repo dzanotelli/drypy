@@ -4,9 +4,9 @@
    contain the root `toctree` directive.
 
 .. edited by Daniele Zanotelli
-   last update: 1496417315
+   last update: 1540115048
 
-.. _github: https://github.com/dzanotelli/python-dryrun.git
+.. _github: https://github.com/dzanotelli/drypy.git
 
 
 drypy's docs - ver |version|
@@ -21,16 +21,26 @@ mode in a flexible turn on/off fashion.
 *last release:*
   |release|
 
+Installation
+------------
 
+Via `pip`:
+
+::
+
+   $ pip install drypy
+
+
+or you can clone the github_ repository (a `Makefile` is included to easily
+build the package).
 
 
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
+   :caption: User guide
 
-
-   tutorial
+   quickstart
    api
 
 ..
