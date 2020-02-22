@@ -10,7 +10,7 @@
 
 
 drypy's docs - ver |version|
-=================================
+============================
 
 *drypy* is a small library meant to help the developer to implement dryrun
 mode in a flexible turn on/off fashion.
@@ -41,6 +41,8 @@ build the package).
    :caption: User guide
 
    quickstart
+   advanced
+   setup_logging
    api
 
 ..

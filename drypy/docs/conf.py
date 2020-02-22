@@ -53,7 +53,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'drypy'
-copyright = '2017-2018, Daniele Zanotelli'
+copyright = '2017-2020, Daniele Zanotelli'
 author = 'Daniele Zanotelli'
 
 # The version info for the project you're documenting, acts as replacement for
