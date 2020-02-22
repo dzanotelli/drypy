@@ -142,7 +142,7 @@ where :code:`self._deputy_of_write` should be defined with the same args of
 
        def setup_dryrun():
            ...
-           shutil = sham(shutil.copy)
+           shutil.copy = sham(shutil.copy)
            ...
 
        if activate_dryrun:
