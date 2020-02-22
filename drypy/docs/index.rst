@@ -4,7 +4,7 @@
    contain the root `toctree` directive.
 
 .. edited by Daniele Zanotelli
-   last update: 1540115048
+   last update: 1582393981
 
 .. _github: https://github.com/dzanotelli/drypy.git
 
