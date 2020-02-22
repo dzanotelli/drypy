@@ -122,3 +122,29 @@ or *sheriff*, and provide a *deputy*:
 
 where :code:`self._deputy_of_write` should be defined with the same args of
 :code:`f.write` or with :code:`*args, **kw`.
+
+.. important::
+
+    If you apply the decorator inline as in the following example:
+
+    .. code-block::
+
+       ...
+       shutil.copy = sham(shutil.copy)
+       ...
+
+    be sure to call this block of code just once, or you may incur into a
+    :code:`RecursionError: maximum recursion depth exceeded`. A good solution
+    is to pack all the dryrun configuration in a specific function and call it
+    when activating the dryrun mode:
+
+    .. code-block::
+
+       def setup_dryrun():
+           ...
+           shutil = sham(shutil.copy)
+           ...
+
+       if activate_dryrun:
+           setup_dryrun()
+           dryrun(True)
