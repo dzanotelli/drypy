@@ -7,7 +7,7 @@ Python projects with an easy switch 'on/off' feature.
 :Authors:
     Daniele Zanotelli (dazano@gmail.com)
 :Copyright:
-    2017-2018
+    2017-2020
 :License:
     MIT
 :Python version:
@@ -65,6 +65,7 @@ Will log the following output:
    [DRYRUN] call to 'foo(42)'
 
 using the python standard logging facility, thus it's up to you
-to correctly configure it.
+to correctly configure it (check the docs for a working example).
 
-To use custom substitutes with specific beahviours please check the docs for the `sheriff-deputy` pattern.
+To use custom substitutes with specific beahviours please search in the docs
+for the `sheriff-deputy` pattern.
