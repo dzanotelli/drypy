@@ -1,6 +1,6 @@
 # Changelog
 
-## [unreleased] next
+## [2023-08-04] 1.0.2
 - docs: added `.readthedocs.yaml` file as required by Read The Docs
 
 ## [2020-02-22] 1.0.1
