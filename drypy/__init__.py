@@ -4,27 +4,11 @@
 """
 
 import logging
-from . import version
+
 
 logger = logging.getLogger(__name__)
 _dryrun = False                           # dryrun switcher flag
 
-
-def get_version(short=False):
-    """Returns the current drypy version.
-
-    Optional args:
-        short (bool): If True return just "major.minor"
-
-    Returns:
-        A string with the current drypy version.
-
-    """
-    if short:
-        # extract the first two parts of version (eg '1.2' from '1.2.3')
-        return '.'.join(version._version.split('.')[:2])
-    else:
-        return version._version
 
 def dryrun(state=None):
     """Return current dryrun mode, If *state* is provided
@@ -40,6 +24,7 @@ def dryrun(state=None):
         set_dryrun(state)
     return get_status()
 
+
 def get_status():
     """Returns True if the dryrun system is active.
 
@@ -54,6 +39,7 @@ def get_status():
         set_dryrun(False)
     return _dryrun
 
+
 def set_dryrun(value):
     """Set the dryrun mode on or off.
 
@@ -65,6 +51,7 @@ def set_dryrun(value):
     if type(value) is not bool:
         raise TypeError("Boolean required")
     _dryrun = value
+
 
 def toggle_dryrun():
     """Toggle the current dryrun mode.
