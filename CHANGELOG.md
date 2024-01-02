@@ -1,6 +1,6 @@
 # Changelog
 
-## [next] unreleased
+## [2024-01-02] 1.0.3
 - docs: added `docs/requirements.txt` with rtd theme (RTD is not building)
 
 NOTE: switching to gitflow to handle branches and versions
