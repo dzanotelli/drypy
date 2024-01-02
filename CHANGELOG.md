@@ -1,5 +1,10 @@
 # Changelog
 
+## [next] unreleased
+- docs: added `docs/requirements.txt` with rtd theme (RTD is not building)
+
+NOTE: switching to gitflow to handle branches and versions
+
 ## [2023-08-04] 1.0.2
 - docs: added `.readthedocs.yaml` file as required by Read The Docs
 
