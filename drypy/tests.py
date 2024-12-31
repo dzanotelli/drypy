@@ -10,7 +10,7 @@ import unittest
 import logging
 import drypy
 from drypy import dryrun, toggle_dryrun
-from drypy.patterns import sham, sheriff
+from drypy.patterns import sham, sheriff, saksag
 
 
 @sham
@@ -51,6 +51,14 @@ def a_last_func():
     return False
 
 
+@saksag(return_value=789)
+def a_saksag_function():
+    """Just a function decorated by saksag.
+
+    """
+    return 123
+
+
 class AClass:
     """A Class with some methods to be decorated.
 
@@ -80,6 +88,9 @@ class AClass:
     def a_last_method(self):
         return "im the last deputy"
 
+    @saksag(return_value="I am Sakshi. Skipper of the ship.")
+    def a_saksag_method(self):
+        return "I am a saksag method"
 
 class TestModeSwitcher(unittest.TestCase):
     """Test the drypy switcher setting mode on/off
@@ -209,6 +220,31 @@ class TestSheriffDeputyDecorator(unittest.TestCase):
 
         dryrun(True)
         self.assertEqual(instance.a_last_method(), "im the last deputy")
+
+
+class TestSaksagDecorator(unittest.TestCase):
+    """Test the 'saksag' decorator
+
+    """
+    def test_a_saksag_function_dryrun_off(self):
+        dryrun(False)
+        self.assertEqual(a_saksag_function(), 123)
+
+    def test_a_saksag_function_dryrun_on(self):
+        dryrun(True)
+        self.assertEqual(a_saksag_function(), 789)
+
+    def test_a_saksag_method_dryrun_off(self):
+        dryrun(False)
+        an_instance = AClass()
+        self.assertEqual(an_instance.a_saksag_method(), "I am a saksag method")
+
+    def test_a_saksag_method_dryrun_on(self):
+        dryrun(True)
+        an_instance = AClass()
+        self.assertEqual(
+            an_instance.a_saksag_method(), "I am Sakshi. Skipper of the ship."
+        )
 
 
 if __name__ == "__main__":
