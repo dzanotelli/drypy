@@ -39,6 +39,7 @@ def sham(func):
             return None
     return decorator
 
+
 def sheriff(func):
     """Decorator which makes drypy to run *func.deputy*
     instead of *func*.
@@ -88,3 +89,53 @@ def sheriff(func):
     setattr(decorator, 'sheriff_name', func.__name__)
 
     return decorator
+
+
+def saksag(return_value=None):
+    """Decorator which makes drypy to log the call of the target
+    function and returns a user defined value without executing it.
+
+    Example 1:
+        >>> @saksag(return_value=25)
+        ... def foo(bar, baz=None):
+        ...     return 42
+        ...
+        >>> a = foo("sport", baz=False)
+        >>> print(a)
+        42
+        >>> dryrun(True)
+        >>> b = foo("sport", baz=False)
+        INFO:drypy.saksag:[DRYRUN] call to 'foo(sport, baz=False)'
+        >>> print(b)
+        25
+
+    Example 2:
+        >>> @saksag(return_value="I am Sakshi")
+        ... def sakfoo(bar):
+        ...     return "I am sakfoo"
+        ...
+        >>> a = sakfoo("sport")
+        >>> print(a)
+        'I am sakfoo'
+        >>> dryrun(True)
+        >>> b = sakfoo("sport")
+        INFO:drypy.saksag:[DRYRUN] call to 'sakfoo(sport)'
+        >>> print(b)
+        'I am Sakshi'
+
+    """
+    # This is the decorator function, which accepts `return_value`
+    def decorator(func):
+        # This is the actual decorator
+        @functools.wraps(func)
+        def wrapper(*args, **kwargs):
+            # The wrapper executes based on the `dryrun` condition
+            if dryrun() is False:
+                return func(*args, **kwargs)
+            else:
+                log_call(func, *args, **kwargs)
+                return return_value
+
+        return wrapper
+
+    return decorator  # Return the decorator function
