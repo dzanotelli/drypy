@@ -50,6 +50,17 @@ or *sheriff*, and provide a *deputy*:
 where :code:`self._deputy_of_write` should be defined with the same args of
 :code:`f.write` or with :code:`*args, **kw`.
 
+or *sentinel", and provide a return value:
+
+.. code-block:: python
+
+           # write it to file
+           try:
+               with open('file.txt', 'a') as f:
+                   f.write = sentinel(return_value=None)(f.write)
+                   f.write(result)
+               ...
+
 .. important::
 
     If you apply the decorator inline as in the following example:
