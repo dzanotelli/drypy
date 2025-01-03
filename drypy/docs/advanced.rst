@@ -50,7 +50,7 @@ or *sheriff*, and provide a *deputy*:
 where :code:`self._deputy_of_write` should be defined with the same args of
 :code:`f.write` or with :code:`*args, **kw`.
 
-or *sentinel", and provide a return value:
+or *sentinel*, and provide a return value:
 
 .. code-block:: python
 
