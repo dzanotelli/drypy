@@ -91,12 +91,12 @@ def sheriff(func):
     return decorator
 
 
-def saksag(return_value=None):
+def sentinel(return_value=None):
     """Decorator which makes drypy to log the call of the target
     function and returns a user defined value without executing it.
 
     Example 1:
-        >>> @saksag(return_value=25)
+        >>> @sentinel(return_value=25)
         ... def foo(bar, baz=None):
         ...     return 42
         ...
@@ -105,12 +105,12 @@ def saksag(return_value=None):
         42
         >>> dryrun(True)
         >>> b = foo("sport", baz=False)
-        INFO:drypy.saksag:[DRYRUN] call to 'foo(sport, baz=False)'
+        INFO:drypy.sentinel:[DRYRUN] call to 'foo(sport, baz=False)'
         >>> print(b)
         25
 
     Example 2:
-        >>> @saksag(return_value="I am Sakshi")
+        >>> @sentinel(return_value="I am Sakshi")
         ... def sakfoo(bar):
         ...     return "I am sakfoo"
         ...
@@ -119,7 +119,7 @@ def saksag(return_value=None):
         'I am sakfoo'
         >>> dryrun(True)
         >>> b = sakfoo("sport")
-        INFO:drypy.saksag:[DRYRUN] call to 'sakfoo(sport)'
+        INFO:drypy.sentinel:[DRYRUN] call to 'sakfoo(sport)'
         >>> print(b)
         'I am Sakshi'
 
