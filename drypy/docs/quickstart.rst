@@ -78,7 +78,7 @@ When *drypy* dryrun mode is set to **True**, the function marked by
 Dryrun with mock
 ----------------
 
-Sometimes we have a requirement to dryrun a function but also need to mock its 
+Sometimes we have a requirement to dryrun a function but also need to mock its
 return value. The *sentinel* decorator can be used for this purpose:
 
 .. code-block:: python
@@ -89,13 +89,13 @@ return value. The *sentinel* decorator can be used for this purpose:
    def foo(bar):
        return 12
 
-Turning on *drypy* dryrun mode will now also mock the return value of *foo* 
+Turning on *drypy* dryrun mode will now also mock the return value of *foo*
 along with skipping execution and logging the call:
 
    >>> from drypy import dryrun
    >>> dryrun(True)
-   >>> result = foo(42)
-   [DRYRUN] call to 'foo(42)'
+   >>> result = foo("anything")
+   [DRYRUN] call to 'foo("anything")'
    >>> result
    42
 
