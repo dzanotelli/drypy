@@ -6,8 +6,10 @@ Python projects with an easy switch 'on/off' feature.
 
 :Authors:
     Daniele Zanotelli (dazano@gmail.com)
+:Contributors:
+    sakshilucky25
 :Copyright:
-    2017-2024
+    2017-2025
 :License:
     MIT
 :Python version:

@@ -73,3 +73,35 @@ When *drypy* dryrun mode is set to **True**, the function marked by
    Otherwise, if you think that the sheriff function signature may change in
    the future, you can use the generic syntax `*args, **kw` for the deputy
    args.
+
+
+Dryrun with mock
+----------------
+
+Sometimes we have a requirement to dryrun a function but also need to mock its
+return value. The *sentinel* decorator can be used for this purpose:
+
+.. code-block:: python
+
+   from drypy.patterns import sentinel
+
+   @sentinel(return_value=42)
+   def foo(bar):
+       return 12
+
+Turning on *drypy* dryrun mode will now also mock the return value of *foo*
+along with skipping execution and logging the call:
+
+   >>> from drypy import dryrun
+   >>> dryrun(True)
+   >>> result = foo("anything")
+   [DRYRUN] call to 'foo("anything")'
+   >>> result
+   42
+
+.. note::
+
+   *drypy* uses the python standard :py:mod:`logging` library therefore you
+   will need to setup valid handlers in order to get the messages.
+
+   *drypy* logs messages with the ``logging.INFO`` level.
