@@ -6,11 +6,14 @@
 .. moduleauthor:: Daniele Zanotelli <dazano@gmail.com>
 """
 
-import unittest
 import logging
+import unittest
+
 import drypy
+
 from drypy import dryrun, toggle_dryrun
 from drypy.patterns import sham, sheriff, sentinel
+from .test_utils import DryPyTestCase
 
 
 @sham
@@ -68,6 +71,18 @@ class AClass:
     def a_method(self, i, n=1):
         return i * n
 
+    @sham(custom_msg="Antani")
+    def another_method(self, i, n=1):
+        return i * n
+
+    @sham(return_value=789)
+    def a_method_with_custom_return_value(self, i, n=1):
+        return i * n
+
+    @sham(log_level=logging.DEBUG)
+    def a_method_with_debug_log(self, i, n=1):
+        return i * n
+
     @sheriff
     def a_sheriff_without_deputy(self, one, two=3):
         return one + two
@@ -92,7 +107,7 @@ class AClass:
     def a_sentinel_method(self):
         return "I am a sentinel method"
 
-class TestModeSwitcher(unittest.TestCase):
+class TestModeSwitcher(DryPyTestCase):
     """Test the drypy switcher setting mode on/off
 
     """
@@ -121,7 +136,7 @@ class TestModeSwitcher(unittest.TestCase):
         self.assertEqual(dryrun(), False)
 
 
-class TestShamDecorator(unittest.TestCase):
+class TestShamDecorator(DryPyTestCase):
     """Test the 'sham' decorator
 
     """
@@ -143,8 +158,91 @@ class TestShamDecorator(unittest.TestCase):
         an_instance = AClass()
         self.assertEqual(an_instance.a_method(10, 2), None)
 
+    def test_func_custom_log_message(self):
+        @sham(custom_msg="Antani")
+        def do_some():
+            return True
 
-class TestSheriffDeputyDecorator(unittest.TestCase):
+        dryrun(True)
+
+        with self.assertLogs('', level='INFO') as cm:
+            self.assertEqual(do_some(), None)
+
+        self.assertEqual(len(cm.records), 1)
+        log_record = cm.records[0]
+        self.assertEqual(log_record.levelno, logging.INFO)
+        self.assertIn("Antani", log_record.getMessage())
+
+    def test_func_logging_level(self):
+        self.assertEqual(drypy.get_logging_level(), logging.INFO)
+
+        @sham(log_level=logging.DEBUG)
+        def do_something():
+            return True
+
+        dryrun(True)
+        with self.assertNoLogs('root', level='INFO') as cm:
+            self.assertEqual(do_something(), None)
+
+        with self.assertLogs('root', level='DEBUG') as cm:
+            self.assertEqual(do_something(), None)
+
+        self.assertEqual(len(cm.records), 1)
+        log_record = cm.records[0]
+        self.assertEqual(log_record.levelno, logging.DEBUG)
+
+    def test_func_return_value(self):
+        @sham(return_value=789)
+        def do_something():
+            return True
+
+        self.assertEqual(do_something(), True)
+        dryrun(True)
+        self.assertEqual(do_something(), 789)
+
+    def test_method_custom_log_message(self):
+        an_instance = AClass()
+        dryrun(True)
+
+        with self.assertLogs('', level='INFO') as cm:
+            self.assertEqual(an_instance.another_method(10, 2), None)
+
+        self.assertEqual(len(cm.records), 1)
+        log_record = cm.records[0]
+        self.assertEqual(log_record.levelno, logging.INFO)
+        self.assertIn("Antani", log_record.getMessage())
+
+    def test_method_logging_level(self):
+        an_instance = AClass()
+        self.assertEqual(drypy.get_logging_level(), logging.INFO)
+
+        dryrun(True)
+        with self.assertNoLogs('root', level='INFO') as cm:
+            self.assertEqual(
+                an_instance.a_method_with_debug_log(10, 2), None
+            )
+
+        with self.assertLogs('root', level='DEBUG') as cm:
+            self.assertEqual(
+                an_instance.a_method_with_debug_log(10, 2), None
+            )
+
+        self.assertEqual(len(cm.records), 1)
+        log_record = cm.records[0]
+        self.assertEqual(log_record.levelno, logging.DEBUG)
+
+    def test_method_return_value(self):
+        an_instance = AClass()
+
+        self.assertEqual(
+            an_instance.a_method_with_custom_return_value(10, 2), 20)
+        dryrun(True)
+        self.assertEqual(
+            an_instance.a_method_with_custom_return_value(10, 2), 789
+        )
+
+
+class TestSheriffDeputyDecorator(DryPyTestCase):
     """Test the sheriff-deputy pattern.
 
     """
@@ -222,7 +320,7 @@ class TestSheriffDeputyDecorator(unittest.TestCase):
         self.assertEqual(instance.a_last_method(), "im the last deputy")
 
 
-class TestSentinelDecorator(unittest.TestCase):
+class TestSentinelDecorator(DryPyTestCase):
     """Test the 'sentinel' decorator
 
     """
@@ -251,14 +349,37 @@ class TestSentinelDecorator(unittest.TestCase):
         )
 
 
-if __name__ == "__main__":
-    import io
-    captured = io.StringIO()
-    logging.basicConfig(stream=captured, level=logging.INFO)
+class TestLoggingLevel(DryPyTestCase):
+    def test_logging_level(self):
+        # without setting the logging level, the default is INFO
+        dryrun(True)
+        with self.assertLogs('drypy', level='INFO') as cm:
+            a_function()
 
-    try:
-        unittest.main()
-    finally:
-        captured.seek(0)
-        print("\n---- CAPTURED LOGS ----")
-        print(captured.read())
+        self.assertEqual(len(cm.records), 1)
+        log_record = cm.records[0]
+        self.assertEqual(log_record.levelno, logging.INFO)
+
+        # now change the global logging level to DEBUG, to be able to
+        # capture all the logs
+        root_logger = logging.getLogger()
+        root_logger.setLevel(logging.DEBUG)
+
+        # change drypy logging level
+        drypy.set_logging_level(logging.DEBUG)
+        with self.assertLogs('drypy', level='DEBUG') as cm:
+            a_function()
+
+        self.assertEqual(len(cm.records), 1)
+        log_record = cm.records[0]
+        self.assertEqual(log_record.levelno, logging.DEBUG)
+
+        # change drypy logging level to ERROR
+        drypy.set_logging_level(logging.ERROR)
+
+        with self.assertLogs('drypy', level='DEBUG') as cm:
+            a_function()
+
+        self.assertEqual(len(cm.records), 1)
+        log_record = cm.records[0]
+        self.assertEqual(log_record.levelno, logging.ERROR)
