@@ -9,7 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [next] - unreleased
 
 ### Added
-- now it's possible to set the global
+- now it's possible to set the global (#24)
+- now it's possible to pass args to `sham` decorator (#26)
+  - `log_level` custom log level just for the decorated function
+  - `custom_msg` custom log message to replace default output
+  - `return_value` to return a custom value instead of None, in order to
+    emulate and replace the `sentinel` decorator
 
 
 ## [2025-01-04] 1.1.0

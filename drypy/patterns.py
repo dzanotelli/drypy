@@ -14,7 +14,7 @@ from .utils import log_call
 logger = logging.getLogger(__name__)
 
 
-def sham(func, **kwargs):
+def sham(_func=None, log_level=None, return_value=None, custom_msg=None):
     """Decorator which makes drypy to log the call of the target
     function without executing it.
 
@@ -29,14 +29,28 @@ def sham(func, **kwargs):
         INFO:drypy.sham:[DRYRUN] call to 'foo(sport, baz=False)'
 
     """
-    @functools.wraps(func)
-    def decorator(*args, **kw):
-        # if dry run is disabled exec the original method
-        if dryrun() is False:
-            return func(*args, **kw)
-        else:
-            log_call(func, *args, **kw)
-            return None
+    def decorator(func):
+        @functools.wraps(func)
+        def wrapper(*args, **kw):
+            # if dry run is disabled exec the original method
+            if dryrun() is False:
+                return func(*args, **kw)
+            else:
+                # NOTE: it's really unlikely that user has a function which
+                #  defines these arguments. We prefixed them with `_drypy_`
+                #  to limit at most the possibility of collision
+                if log_level is not None:
+                    kw.update({'_drypy_log_level': log_level})
+                if custom_msg is not None:
+                    kw.update({'_drypy_custom_msg': custom_msg})
+
+                log_call(func, *args, **kw)
+                return return_value
+        return wrapper
+
+    if _func is not None and callable(_func):
+        return decorator(_func)
+
     return decorator
 
 
