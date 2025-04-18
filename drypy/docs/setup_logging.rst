@@ -1,6 +1,9 @@
 Setup Logging
 =============
 
+Setup
+-----
+
 `drypy` uses the standard python logging facility to display messages. Each
 `drypy` module initializes its own logger using the standard syntax:
 
@@ -40,3 +43,26 @@ You should get the following output in your console:
 
     hello
     [DRYRUN] call to 'do_something()'
+
+
+Configure custom logging level
+------------------------------
+
+`drypy` by default emit logs with level `logging.INFO`.
+It's possible to set a custom level using the function `set_logging_level`:
+
+.. code-block:: python
+
+    import logging
+    from drypy import set_logging_level
+
+    set_logging_level(logging.DEBUG)
+
+.. important::
+
+    This function will affect just the level of emitted logs. Please ensure
+    that both the :code:`drypy` logger and the attached handlers have a log
+    level equal or lower to this level, otherwise they will filter out logs.
+    E.g., setting :code:`set_logging_level(logging.WARNING)` and the
+    :code:`drypy` logger to :code:`logging.ERROR` will produce no logs.
+    Please refer to official python logging docs for more.

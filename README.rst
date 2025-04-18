@@ -71,3 +71,12 @@ to correctly configure it (check the docs for a working example).
 
 To use custom substitutes with specific beahviours please search in the docs
 for the `sheriff-deputy` pattern.
+
+
+Tests
+-----
+
+To run the test suite just use the basic unittest syntax:
+
+::
+    $ python -m unittest drypy/tests.py

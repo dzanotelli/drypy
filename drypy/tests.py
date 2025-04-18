@@ -6,11 +6,14 @@
 .. moduleauthor:: Daniele Zanotelli <dazano@gmail.com>
 """
 
-import unittest
 import logging
+import unittest
+
 import drypy
+
 from drypy import dryrun, toggle_dryrun
 from drypy.patterns import sham, sheriff, sentinel
+from .test_utils import DryPyTestCase
 
 
 @sham
@@ -92,7 +95,7 @@ class AClass:
     def a_sentinel_method(self):
         return "I am a sentinel method"
 
-class TestModeSwitcher(unittest.TestCase):
+class TestModeSwitcher(DryPyTestCase):
     """Test the drypy switcher setting mode on/off
 
     """
@@ -121,7 +124,7 @@ class TestModeSwitcher(unittest.TestCase):
         self.assertEqual(dryrun(), False)
 
 
-class TestShamDecorator(unittest.TestCase):
+class TestShamDecorator(DryPyTestCase):
     """Test the 'sham' decorator
 
     """
@@ -144,7 +147,7 @@ class TestShamDecorator(unittest.TestCase):
         self.assertEqual(an_instance.a_method(10, 2), None)
 
 
-class TestSheriffDeputyDecorator(unittest.TestCase):
+class TestSheriffDeputyDecorator(DryPyTestCase):
     """Test the sheriff-deputy pattern.
 
     """
@@ -222,7 +225,7 @@ class TestSheriffDeputyDecorator(unittest.TestCase):
         self.assertEqual(instance.a_last_method(), "im the last deputy")
 
 
-class TestSentinelDecorator(unittest.TestCase):
+class TestSentinelDecorator(DryPyTestCase):
     """Test the 'sentinel' decorator
 
     """
@@ -251,14 +254,28 @@ class TestSentinelDecorator(unittest.TestCase):
         )
 
 
-if __name__ == "__main__":
-    import io
-    captured = io.StringIO()
-    logging.basicConfig(stream=captured, level=logging.INFO)
+class TestLoggingLevel(DryPyTestCase):
 
-    try:
-        unittest.main()
-    finally:
-        captured.seek(0)
-        print("\n---- CAPTURED LOGS ----")
-        print(captured.read())
+    def test_logging_level(self):
+        # without setting the logging level, the default is INFO
+        dryrun(True)
+        a_function()
+        log = self.get_emitted_logs()
+        self.assertEqual(log[:4], "INFO")
+
+        # now change the global logging level to DEBUG, to be able to
+        # capture all the logs
+        root_logger = logging.getLogger()
+        root_logger.setLevel(logging.DEBUG)
+
+        # change drypy logging level
+        drypy.set_logging_level(logging.DEBUG)
+        a_function()
+        log = self.get_emitted_logs()
+        self.assertEqual(log[:5], "DEBUG")
+
+        # change drypy logging level to ERROR
+        drypy.set_logging_level(logging.ERROR)
+        a_function()
+        log = self.get_emitted_logs()
+        self.assertEqual(log[:5], "ERROR")
