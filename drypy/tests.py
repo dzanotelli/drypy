@@ -146,6 +146,47 @@ class TestShamDecorator(DryPyTestCase):
         an_instance = AClass()
         self.assertEqual(an_instance.a_method(10, 2), None)
 
+    def test_custom_log_message(self):
+        @sham(custom_msg="Antani")
+        def do_some():
+            return True
+
+        dryrun(True)
+
+        with self.assertLogs('', level='INFO') as cm:
+            self.assertEqual(do_some(), None)
+
+        self.assertEqual(len(cm.records), 1)
+        log_record = cm.records[0]
+        self.assertEqual(log_record.levelno, logging.INFO)
+        self.assertIn("Antani", log_record.getMessage())
+
+    def test_logging_level(self):
+        self.assertEqual(drypy.get_logging_level(), logging.INFO)
+
+        @sham(log_level=logging.DEBUG)
+        def do_something():
+            return True
+
+        dryrun(True)
+        with self.assertNoLogs('root', level='INFO') as cm:
+            self.assertEqual(do_something(), None)
+
+        with self.assertLogs('root', level='DEBUG') as cm:
+            self.assertEqual(do_something(), None)
+
+        # self.assertEqual(len(cm.records), 0)
+        # log_record = cm.records[0]
+        # self.assertEqual(log_record.levelno, logging.DEBUG)
+
+    def test_return_value(self):
+        @sham(return_value=789)
+        def do_something():
+            return True
+
+        dryrun(True)
+        self.assertEqual(do_something(), 789)
+
 
 class TestSheriffDeputyDecorator(DryPyTestCase):
     """Test the sheriff-deputy pattern.
@@ -255,13 +296,15 @@ class TestSentinelDecorator(DryPyTestCase):
 
 
 class TestLoggingLevel(DryPyTestCase):
-
     def test_logging_level(self):
         # without setting the logging level, the default is INFO
         dryrun(True)
-        a_function()
-        log = self.get_emitted_logs()
-        self.assertEqual(log[:4], "INFO")
+        with self.assertLogs('drypy', level='INFO') as cm:
+            a_function()
+
+        self.assertEqual(len(cm.records), 1)
+        log_record = cm.records[0]
+        self.assertEqual(log_record.levelno, logging.INFO)
 
         # now change the global logging level to DEBUG, to be able to
         # capture all the logs
@@ -270,12 +313,19 @@ class TestLoggingLevel(DryPyTestCase):
 
         # change drypy logging level
         drypy.set_logging_level(logging.DEBUG)
-        a_function()
-        log = self.get_emitted_logs()
-        self.assertEqual(log[:5], "DEBUG")
+        with self.assertLogs('drypy', level='DEBUG') as cm:
+            a_function()
+
+        self.assertEqual(len(cm.records), 1)
+        log_record = cm.records[0]
+        self.assertEqual(log_record.levelno, logging.DEBUG)
 
         # change drypy logging level to ERROR
         drypy.set_logging_level(logging.ERROR)
-        a_function()
-        log = self.get_emitted_logs()
-        self.assertEqual(log[:5], "ERROR")
+
+        with self.assertLogs('drypy', level='DEBUG') as cm:
+            a_function()
+
+        self.assertEqual(len(cm.records), 1)
+        log_record = cm.records[0]
+        self.assertEqual(log_record.levelno, logging.ERROR)

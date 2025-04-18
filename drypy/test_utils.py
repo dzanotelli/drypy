@@ -4,6 +4,14 @@ import os
 import sys
 import unittest
 
+import drypy
+
+# # capture emitted logs for further inspection. We use basicConfig
+# # cos it auto formats messages on need with `LEVEL:..MESSAGE`
+# # NOTE: basicConfig works just once! so it must be called here
+# _emitted_logs = io.StringIO()
+# logging.basicConfig(stream=_emitted_logs, level=logging.INFO)
+
 
 class DryPyTestCase(unittest.TestCase):
     SILENT = True
@@ -17,23 +25,16 @@ class DryPyTestCase(unittest.TestCase):
             sys.stdout = self._devnull
             sys.stderr = self._devnull
 
-        # capture emitted logs for further inspection
-        self._emitted_logs = io.StringIO()
-        logging.basicConfig(stream=self._emitted_logs, level=logging.INFO)
+        self.reset_logging_conf()
 
-    def get_emitted_logs(self):
-        """
-        Returns emitted logs not yet read
-
-        """
-        self._emitted_logs.seek(0)
-        logs = self._emitted_logs.read()
-        self._emitted_logs.truncate(0)
-        self._emitted_logs.seek(0)
-        return logs
+    def reset_logging_conf(self):
+        drypy.set_logging_level(logging.INFO)
 
     def tearDown(self):
         if self.SILENT:
             sys.stdout = self._stdout
             sys.stderr = self._stderr
             self._devnull.close()
+
+        # reset logging config
+        self.reset_logging_conf()
