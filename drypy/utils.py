@@ -8,6 +8,9 @@
 
 import logging
 
+from drypy import get_logging_level
+
+
 logger = logging.getLogger(__name__)
 
 
@@ -15,6 +18,9 @@ def log_call(func, *args, **kw):
     """Produce a info message which logs the *func* call.
 
     """
+    # pop any system arguments
+    log_level = kw.pop('_drypy_log_level', get_logging_level())
+
     # concatenate args and kw args transforming string values
     # from 'value' to '"value"' in order to pretty display em
     func_args = []
@@ -38,4 +44,4 @@ def log_call(func, *args, **kw):
     # print the log message
     msg = "[DRYRUN] call to '{func}({args})'"
     msg = msg.format(func=func.__name__, args=", ".join(func_args))
-    logger.info(msg)
+    logger.log(log_level, msg)

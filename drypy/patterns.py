@@ -14,7 +14,7 @@ from .utils import log_call
 logger = logging.getLogger(__name__)
 
 
-def sham(func):
+def sham(func, **kwargs):
     """Decorator which makes drypy to log the call of the target
     function without executing it.
 
