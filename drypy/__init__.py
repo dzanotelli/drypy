@@ -8,7 +8,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 _dryrun = False
-_logging_level = logging.INFO                         # dryrun switcher flag
+_logging_level = logging.INFO
 
 
 def dryrun(state=None):
@@ -58,19 +58,23 @@ def toggle_dryrun():
     """Toggle the current dryrun mode.
 
     """
-    if get_status() is True:
-        set_dryrun(False)
-    else:
-        set_dryrun(True)
+    set_dryrun(not get_status())
+
 
 def set_logging_level(level):
     """
     Set the logging level drypy will use by default.
+
     """
     global _logging_level
     if type(level) is not int:
         raise TypeError("Integer required")
     _logging_level = level
 
+
 def get_logging_level():
-    return _logging_level or logging.INFO
+    """
+    Return the current logging level used by drypy
+
+    """
+    return _logging_level
