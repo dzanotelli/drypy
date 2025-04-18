@@ -25,6 +25,7 @@ class DryPyTestCase(unittest.TestCase):
             sys.stdout = self._devnull
             sys.stderr = self._devnull
 
+        drypy.dryrun(False)
         self.reset_logging_conf()
 
     def reset_logging_conf(self):
@@ -37,4 +38,5 @@ class DryPyTestCase(unittest.TestCase):
             self._devnull.close()
 
         # reset logging config
+        drypy.dryrun(False)
         self.reset_logging_conf()

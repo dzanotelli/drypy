@@ -71,6 +71,18 @@ class AClass:
     def a_method(self, i, n=1):
         return i * n
 
+    @sham(custom_msg="Antani")
+    def another_method(self, i, n=1):
+        return i * n
+
+    @sham(return_value=789)
+    def a_method_with_custom_return_value(self, i, n=1):
+        return i * n
+
+    @sham(log_level=logging.DEBUG)
+    def a_method_with_debug_log(self, i, n=1):
+        return i * n
+
     @sheriff
     def a_sheriff_without_deputy(self, one, two=3):
         return one + two
@@ -146,7 +158,7 @@ class TestShamDecorator(DryPyTestCase):
         an_instance = AClass()
         self.assertEqual(an_instance.a_method(10, 2), None)
 
-    def test_custom_log_message(self):
+    def test_func_custom_log_message(self):
         @sham(custom_msg="Antani")
         def do_some():
             return True
@@ -161,7 +173,7 @@ class TestShamDecorator(DryPyTestCase):
         self.assertEqual(log_record.levelno, logging.INFO)
         self.assertIn("Antani", log_record.getMessage())
 
-    def test_logging_level(self):
+    def test_func_logging_level(self):
         self.assertEqual(drypy.get_logging_level(), logging.INFO)
 
         @sham(log_level=logging.DEBUG)
@@ -175,17 +187,59 @@ class TestShamDecorator(DryPyTestCase):
         with self.assertLogs('root', level='DEBUG') as cm:
             self.assertEqual(do_something(), None)
 
-        # self.assertEqual(len(cm.records), 0)
-        # log_record = cm.records[0]
-        # self.assertEqual(log_record.levelno, logging.DEBUG)
+        self.assertEqual(len(cm.records), 1)
+        log_record = cm.records[0]
+        self.assertEqual(log_record.levelno, logging.DEBUG)
 
-    def test_return_value(self):
+    def test_func_return_value(self):
         @sham(return_value=789)
         def do_something():
             return True
 
+        self.assertEqual(do_something(), True)
         dryrun(True)
         self.assertEqual(do_something(), 789)
+
+    def test_method_custom_log_message(self):
+        an_instance = AClass()
+        dryrun(True)
+
+        with self.assertLogs('', level='INFO') as cm:
+            self.assertEqual(an_instance.another_method(10, 2), None)
+
+        self.assertEqual(len(cm.records), 1)
+        log_record = cm.records[0]
+        self.assertEqual(log_record.levelno, logging.INFO)
+        self.assertIn("Antani", log_record.getMessage())
+
+    def test_method_logging_level(self):
+        an_instance = AClass()
+        self.assertEqual(drypy.get_logging_level(), logging.INFO)
+
+        dryrun(True)
+        with self.assertNoLogs('root', level='INFO') as cm:
+            self.assertEqual(
+                an_instance.a_method_with_debug_log(10, 2), None
+            )
+
+        with self.assertLogs('root', level='DEBUG') as cm:
+            self.assertEqual(
+                an_instance.a_method_with_debug_log(10, 2), None
+            )
+
+        self.assertEqual(len(cm.records), 1)
+        log_record = cm.records[0]
+        self.assertEqual(log_record.levelno, logging.DEBUG)
+
+    def test_method_return_value(self):
+        an_instance = AClass()
+
+        self.assertEqual(
+            an_instance.a_method_with_custom_return_value(10, 2), 20)
+        dryrun(True)
+        self.assertEqual(
+            an_instance.a_method_with_custom_return_value(10, 2), 789
+        )
 
 
 class TestSheriffDeputyDecorator(DryPyTestCase):
