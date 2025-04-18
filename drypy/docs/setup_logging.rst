@@ -48,8 +48,8 @@ You should get the following output in your console:
 Configure custom logging level
 ------------------------------
 
-`drypy` by default emit logs with level `logging.INFO`.
-It's possible to set a custom level using the function `set_logging_level`:
+By default, `drypy` emits logs with level `logging.INFO`.
+You can set a custom log level using the `set_logging_level` function:
 
 .. code-block:: python
 
@@ -58,11 +58,20 @@ It's possible to set a custom level using the function `set_logging_level`:
 
     set_logging_level(logging.DEBUG)
 
+This will affect all the logs emitted by `drypy`.
+
+It's also possibile to set a specific log level for each decorated function
+by using the :code:`log_level` argument on the :func:`drypy.patterns.sham`
+decorator. This value overrides the global setting above.
+Please refer to the API documentation for more details.
+
 .. important::
 
     This function will affect just the level of emitted logs. Please ensure
     that both the :code:`drypy` logger and the attached handlers have a log
     level equal or lower to this level, otherwise they will filter out logs.
+    Or leave them to :code:`logging.NOTSET` to rely on root logger
+    configuration.
     E.g., setting :code:`set_logging_level(logging.WARNING)` and the
     :code:`drypy` logger to :code:`logging.ERROR` will produce no logs.
     Please refer to official python logging docs for more.
