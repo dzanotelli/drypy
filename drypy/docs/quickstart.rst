@@ -79,13 +79,13 @@ Dryrun with mock
 ----------------
 
 Sometimes we have a requirement to dryrun a function but also need to mock its
-return value. The *sentinel* decorator can be used for this purpose:
+return value. You can use :code:`sham` decorator with args for this purpose:
 
 .. code-block:: python
 
-   from drypy.patterns import sentinel
+   from drypy.patterns import sham
 
-   @sentinel(return_value=42)
+   @sham(return_value=42)
    def foo(bar):
        return 12
 
@@ -105,3 +105,10 @@ along with skipping execution and logging the call:
    will need to setup valid handlers in order to get the messages.
 
    *drypy* logs messages with the ``logging.INFO`` level.
+
+.. warning::
+
+   A custom return value used to be handled by the :code:`sentinel` decorator:
+   It is now deprecated and it will be removed soon.
+   Please use :code:`sham` with arguments instead, as shown in the example
+   above. See :func:`drypy.patterns.sham` for more details.
